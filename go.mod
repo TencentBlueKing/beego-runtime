@@ -1,4 +1,4 @@
-module beego-runtime
+module github.com/homholueng/beego-runtime
 
 go 1.17
 
