@@ -68,6 +68,7 @@ func Run() {
 	case "migrate":
 		runBeeCommand(migrateCommand, args)
 	case "server":
+		beego.SetStaticPath("/static", "static")
 		beego.Run(":8000")
 	default:
 		utils.PrintErrorAndExit("Unknown subcommand", cmd.ErrorTemplate)
