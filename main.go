@@ -2,10 +2,9 @@ package main
 
 import (
 	_ "github.com/homholueng/beego-runtime/routers"
-
-	beego "github.com/beego/beego/v2/server/web"
+	"github.com/homholueng/beego-runtime/runner"
 )
 
 func main() {
-	beego.Run("localhost:8000")
+	runner.Run()
 }
