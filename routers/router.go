@@ -8,4 +8,7 @@ import (
 
 func init() {
 	beego.Router("/", &controllers.MainController{})
+	beego.Router("/bk_plugin/meta", &controllers.MetaController{})
+	beego.Router("/bk_plugin/detail/:version", &controllers.DetailController{})
+	beego.Router("/bk_plugin/invoke/:version", &controllers.InvokeController{})
 }

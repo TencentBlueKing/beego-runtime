@@ -2,6 +2,7 @@ package runner
 
 import (
 	"flag"
+	"fmt"
 	"log"
 	"os"
 
@@ -9,7 +10,11 @@ import (
 	"github.com/beego/bee/v2/cmd/commands"
 	"github.com/beego/bee/v2/config"
 	"github.com/beego/bee/v2/utils"
+	"github.com/beego/beego/v2/client/orm"
 	beego "github.com/beego/beego/v2/server/web"
+	"github.com/homholueng/beego-runtime/conf"
+	_ "github.com/homholueng/beego-runtime/models"
+	_ "github.com/homholueng/beego-runtime/routers"
 )
 
 var migrateCommand *commands.Command
@@ -65,12 +70,41 @@ func Run() {
 	}
 
 	switch args[0] {
+
 	case "migrate":
-		runBeeCommand(migrateCommand, args)
+		migrateArgs := []string{
+			"migrate",
+			"-driver=mysql",
+			fmt.Sprintf(
+				"-conn=%v:%v@tcp(%v:%v)/%v",
+				conf.DataBase.User,
+				conf.DataBase.Password,
+				conf.DataBase.Host,
+				conf.DataBase.Port,
+				conf.DataBase.DBName,
+			),
+		}
+		runBeeCommand(migrateCommand, migrateArgs)
+
 	case "server":
+		orm.RegisterDataBase(
+			"default",
+			"mysql",
+			fmt.Sprintf(
+				"%v:%v@tcp(%v:%v)/%v",
+				conf.DataBase.User,
+				conf.DataBase.Password,
+				conf.DataBase.Host,
+				conf.DataBase.Port,
+				conf.DataBase.DBName,
+			),
+		)
+		beego.BConfig.CopyRequestBody = true
 		beego.SetStaticPath("/static", "static")
 		beego.Run(":8000")
+
 	default:
-		utils.PrintErrorAndExit("Unknown subcommand", cmd.ErrorTemplate)
+		fmt.Printf("Unknown subcommand: %v\n", args[0])
+		os.Exit(2)
 	}
 }
