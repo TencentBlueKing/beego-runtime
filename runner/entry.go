@@ -15,6 +15,7 @@ import (
 	"github.com/homholueng/beego-runtime/conf"
 	_ "github.com/homholueng/beego-runtime/models"
 	_ "github.com/homholueng/beego-runtime/routers"
+	runtimeUtils "github.com/homholueng/beego-runtime/utils"
 )
 
 var migrateCommand *commands.Command
@@ -72,6 +73,12 @@ func Run() {
 	switch args[0] {
 
 	case "migrate":
+		migDir, err := runtimeUtils.GetMigrationDirPath()
+		if err != nil {
+			fmt.Printf("get migration files dir failed: %v\n", err)
+			os.Exit(2)
+		}
+
 		migrateArgs := []string{
 			"migrate",
 			"-driver=mysql",
@@ -83,6 +90,7 @@ func Run() {
 				conf.DataBase.Port,
 				conf.DataBase.DBName,
 			),
+			fmt.Sprintf("-dir=%v", migDir),
 		}
 		runBeeCommand(migrateCommand, migrateArgs)
 

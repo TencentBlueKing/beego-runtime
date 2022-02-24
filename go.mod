@@ -8,6 +8,7 @@ require (
 	github.com/beego/bee/v2 v2.0.2
 	github.com/google/uuid v1.2.0
 	github.com/homholueng/bk-plugin-framework-go v0.0.3
+	golang.org/x/mod v0.4.2
 )
 
 require (
@@ -54,6 +55,7 @@ require (
 	golang.org/x/net v0.0.0-20210405180319-a5a99cb37ef4 // indirect
 	golang.org/x/sys v0.0.0-20210603081109-ebe580a85c40 // indirect
 	golang.org/x/text v0.3.5 // indirect
+	golang.org/x/xerrors v0.0.0-20200804184101-5ec99f83aff1 // indirect
 	google.golang.org/protobuf v1.26.0 // indirect
 	gopkg.in/ini.v1 v1.51.0 // indirect
 	gopkg.in/yaml.v2 v2.4.0 // indirect
