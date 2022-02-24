@@ -109,7 +109,7 @@ func Run() {
 		)
 		beego.BConfig.CopyRequestBody = true
 		beego.SetStaticPath("/static", "static")
-		beego.Run(":8000")
+		beego.Run(":5000")
 
 	default:
 		fmt.Printf("Unknown subcommand: %v\n", args[0])

@@ -8,7 +8,6 @@ import (
 )
 
 const configData string = `
-httpport = 5000
 pluginname = ${BKPAAS_APP_ID}
 runmode = ${BKPAAS_ENVIRONMENT||dev}
 
