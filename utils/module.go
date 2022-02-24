@@ -9,7 +9,12 @@ import (
 )
 
 func GetMigrationDirPath() (string, error) {
-	return GetModulePath("github.com/homholueng/beego-runtime/database/migrations", info.Version())
+	baseDir, err := GetModulePath("github.com/homholueng/beego-runtime", info.Version())
+	if err != nil {
+		return "", err
+	}
+
+	return path.Join(baseDir, "database/migrations"), nil
 }
 
 func GetModulePath(name, version string) (string, error) {
