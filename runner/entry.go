@@ -108,7 +108,7 @@ func Run() {
 			logs.Error("get view path failed: %v", err)
 			os.Exit(2)
 		}
-		logs.Info("serve views at %v", staticDir)
+		logs.Info("serve views at %v", viewPath)
 
 		orm.RegisterDataBase(
 			"default",
