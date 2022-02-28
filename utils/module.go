@@ -26,6 +26,15 @@ func GetStaticDirPath() (string, error) {
 	return path.Join(baseDir, "static"), nil
 }
 
+func GetViewPath() (string, error) {
+	baseDir, err := GetModulePath("github.com/homholueng/beego-runtime", info.Version())
+	if err != nil {
+		return "", err
+	}
+
+	return path.Join(baseDir, "views"), nil
+}
+
 func GetModulePath(name, version string) (string, error) {
 	// first we need GOMODCACHE
 	cache, ok := os.LookupEnv("GOMODCACHE")

@@ -11,6 +11,7 @@ import (
 	"github.com/beego/bee/v2/config"
 	"github.com/beego/bee/v2/utils"
 	"github.com/beego/beego/v2/client/orm"
+	"github.com/beego/beego/v2/core/logs"
 	beego "github.com/beego/beego/v2/server/web"
 	"github.com/homholueng/beego-runtime/conf"
 	_ "github.com/homholueng/beego-runtime/models"
@@ -75,7 +76,7 @@ func Run() {
 	case "migrate":
 		migDir, err := runtimeUtils.GetMigrationDirPath()
 		if err != nil {
-			fmt.Printf("get migration files dir failed: %v\n", err)
+			logs.Error("get migration files dir failed: %v\n", err)
 			os.Exit(2)
 		}
 
@@ -97,9 +98,17 @@ func Run() {
 	case "server":
 		staticDir, err := runtimeUtils.GetStaticDirPath()
 		if err != nil {
-			fmt.Printf("get static files dir failed: %v\n", err)
+			logs.Error("get static files dir failed: %v", err)
 			os.Exit(2)
 		}
+		logs.Info("serve /static at %v", staticDir)
+
+		viewPath, err := runtimeUtils.GetViewPath()
+		if err != nil {
+			logs.Error("get view path failed: %v", err)
+			os.Exit(2)
+		}
+		logs.Info("serve views at %v", staticDir)
 
 		orm.RegisterDataBase(
 			"default",
@@ -114,11 +123,12 @@ func Run() {
 			),
 		)
 		beego.BConfig.CopyRequestBody = true
+		beego.BConfig.WebConfig.ViewsPath = viewPath
 		beego.SetStaticPath("/static", staticDir)
 		beego.Run(fmt.Sprintf(":%v", conf.Port))
 
 	default:
-		fmt.Printf("Unknown subcommand: %v\n", args[0])
+		logs.Error("Unknown subcommand: %v", args[0])
 		os.Exit(2)
 	}
 }
