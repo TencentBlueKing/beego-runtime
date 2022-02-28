@@ -79,6 +79,7 @@ func Run() {
 			logs.Error("get migration files dir failed: %v\n", err)
 			os.Exit(2)
 		}
+		logs.Info("use migration dir: %v", migDir)
 
 		migrateArgs := []string{
 			"migrate",
