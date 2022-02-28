@@ -26,6 +26,7 @@ dev_dbport = ${BK_PLUGIN_RUNTIME_DB_PORT||3306}
 
 var Settings config.Configer
 var DataBase DataBaseSetting
+var Port int
 
 const ()
 
@@ -39,6 +40,14 @@ type DataBaseSetting struct {
 
 func onDevEnv() bool {
 	return Settings.DefaultString("runmode", "dev") == "dev"
+}
+
+func initServerPort() {
+	if onDevEnv() {
+		Port = 8000
+	} else {
+		Port = 5000
+	}
 }
 
 func initDataBase() {
@@ -76,4 +85,6 @@ func init() {
 
 	// init database info
 	initDataBase()
+	// init server port info
+	initServerPort()
 }

@@ -95,6 +95,12 @@ func Run() {
 		runBeeCommand(migrateCommand, migrateArgs)
 
 	case "server":
+		staticDir, err := runtimeUtils.GetStaticDirPath()
+		if err != nil {
+			fmt.Printf("get static files dir failed: %v\n", err)
+			os.Exit(2)
+		}
+
 		orm.RegisterDataBase(
 			"default",
 			"mysql",
@@ -108,8 +114,8 @@ func Run() {
 			),
 		)
 		beego.BConfig.CopyRequestBody = true
-		beego.SetStaticPath("/static", "static")
-		beego.Run(":5000")
+		beego.SetStaticPath("/static", staticDir)
+		beego.Run(fmt.Sprintf(":%v", conf.Port))
 
 	default:
 		fmt.Printf("Unknown subcommand: %v\n", args[0])
