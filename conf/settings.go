@@ -38,12 +38,12 @@ type DataBaseSetting struct {
 	DBName   string
 }
 
-func onDevEnv() bool {
+func IsDevMode() bool {
 	return Settings.DefaultString("runmode", "dev") == "dev"
 }
 
 func initServerPort() {
-	if onDevEnv() {
+	if IsDevMode() {
 		Port = 8000
 	} else {
 		Port = 5000
@@ -55,7 +55,7 @@ func initDataBase() {
 	for _, key := range []string{"dbname", "dbuser", "dbpasswd", "dbhost", "dbport"} {
 		var val string
 		var err error
-		if onDevEnv() {
+		if IsDevMode() {
 			val, err = Settings.String(fmt.Sprintf("dev_%v", key))
 		} else {
 			val, err = Settings.String(key)
