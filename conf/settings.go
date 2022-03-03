@@ -84,7 +84,11 @@ func RedisClient() *redis.Client {
 }
 
 func initAsynqClient() {
-	asynqClient = asynq.NewClient(asynq.RedisClientOpt{Addr: redisAddr})
+	asynqClient = asynq.NewClient(asynq.RedisClientOpt{
+		Addr:     redisAddr,
+		Password: Settings.DefaultString("redis_password", ""),
+		DB:       0,
+	})
 }
 
 func AsynqClient() *asynq.Client {
