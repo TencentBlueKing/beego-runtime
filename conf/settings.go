@@ -29,6 +29,7 @@ var pluginName string
 var port int
 var workerNum int
 var redisAddr string
+var redisPassword string
 var asynqClient *asynq.Client
 var redisClient *redis.Client
 var scheduleExpiration time.Duration
@@ -71,10 +72,18 @@ func RedisAddr() string {
 	return redisAddr
 }
 
+func initRedisPassword() {
+	redisPassword = Settings.DefaultString("redis_password", "")
+}
+
+func RedisPassword() string {
+	return redisPassword
+}
+
 func initRedisClient() {
 	redisClient = redis.NewClient(&redis.Options{
 		Addr:     redisAddr,
-		Password: Settings.DefaultString("redis_password", ""),
+		Password: redisPassword,
 		DB:       0,
 	})
 }
@@ -86,7 +95,7 @@ func RedisClient() *redis.Client {
 func initAsynqClient() {
 	asynqClient = asynq.NewClient(asynq.RedisClientOpt{
 		Addr:     redisAddr,
-		Password: Settings.DefaultString("redis_password", ""),
+		Password: redisPassword,
 		DB:       0,
 	})
 }
@@ -126,6 +135,7 @@ func init() {
 
 	initServerPort()
 	initRedisAddr()
+	initRedisPassword()
 	initRedisClient()
 	initAsynqClient()
 	initScheduleExpiration()

@@ -9,7 +9,11 @@ import (
 
 func Run() error {
 	srv := asynq.NewServer(
-		asynq.RedisClientOpt{Addr: conf.RedisAddr()},
+		asynq.RedisClientOpt{
+			Addr:     conf.RedisAddr(),
+			Password: conf.RedisPassword(),
+			DB:       0,
+		},
 		asynq.Config{Concurrency: conf.WorkerConcurrency()},
 	)
 
