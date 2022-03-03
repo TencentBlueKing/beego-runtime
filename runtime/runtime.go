@@ -6,7 +6,6 @@ import (
 
 	"github.com/homholueng/bk-plugin-framework-go/constants"
 	"github.com/homholueng/bk-plugin-framework-go/runtime"
-	"github.com/prometheus/common/log"
 )
 
 type Poller interface {
@@ -57,7 +56,6 @@ func (r *ExecuteRuntime) SetPoll(traceID string, version string, invokeCount int
 	}
 
 	if err = r.Poller.Poll(traceID, after); err != nil {
-		log.Error("poll error: %v", err)
 		return err
 	}
 
