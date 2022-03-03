@@ -8,15 +8,6 @@ import (
 	"golang.org/x/mod/module"
 )
 
-func GetMigrationDirPath() (string, error) {
-	baseDir, err := GetModulePath("github.com/homholueng/beego-runtime", info.Version())
-	if err != nil {
-		return "", err
-	}
-
-	return path.Join(baseDir, "database/migrations"), nil
-}
-
 func GetStaticDirPath() (string, error) {
 	baseDir, err := GetModulePath("github.com/homholueng/beego-runtime", info.Version())
 	if err != nil {

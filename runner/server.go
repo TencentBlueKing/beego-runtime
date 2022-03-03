@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/beego/beego/v2/client/orm"
 	"github.com/beego/beego/v2/core/logs"
 	"github.com/beego/beego/v2/server/web"
 	"github.com/homholueng/beego-runtime/conf"
@@ -37,20 +36,8 @@ func runServer() {
 	}
 	logs.Info("serve views at %v", viewPath)
 
-	orm.RegisterDataBase(
-		"default",
-		"mysql",
-		fmt.Sprintf(
-			"%v:%v@tcp(%v:%v)/%v",
-			conf.DataBase.User,
-			conf.DataBase.Password,
-			conf.DataBase.Host,
-			conf.DataBase.Port,
-			conf.DataBase.DBName,
-		),
-	)
 	web.BConfig.CopyRequestBody = true
 	web.BConfig.WebConfig.ViewsPath = viewPath
 	web.SetStaticPath("/static", staticDir)
-	web.Run(fmt.Sprintf(":%v", conf.Port))
+	web.Run(fmt.Sprintf(":%v", conf.Port()))
 }

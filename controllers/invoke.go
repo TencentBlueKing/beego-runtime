@@ -7,7 +7,9 @@ import (
 
 	web "github.com/beego/beego/v2/server/web"
 	"github.com/google/uuid"
+	"github.com/homholueng/beego-runtime/conf"
 	"github.com/homholueng/beego-runtime/runtime"
+	"github.com/homholueng/beego-runtime/worker"
 	"github.com/homholueng/bk-plugin-framework-go/constants"
 	"github.com/homholueng/bk-plugin-framework-go/executor"
 )
@@ -48,9 +50,11 @@ func (c *InvokeController) Post() {
 			Data:    &InvokePostData{},
 		}
 		c.ServeJSON()
+		return
 	}
 
-	reader := runtime.RequestPhaseContextReader{Inputs: param.Inputs, ContextInputs: param.Context}
+	reader := runtime.JSONContextReader{Inputs: param.Inputs, ContextInputs: param.Context}
+
 	contextStore := runtime.SimpleObjectStore{}
 	outputStore := runtime.SimpleObjectStore{}
 	state, err := executor.Execute(
@@ -58,8 +62,18 @@ func (c *InvokeController) Post() {
 		version,
 		&reader,
 		&runtime.ExecuteRuntime{
-			OutputsStore: &outputStore,
-			ContextStore: &contextStore,
+			Inputs:        param.Inputs,
+			ContextInputs: param.Context,
+			OutputsStore:  &outputStore,
+			ContextStore:  &contextStore,
+			ScheduleStore: &runtime.RedisScheduleStore{
+				Client:             conf.RedisClient(),
+				Expiration:         conf.ScheduleExpiration(),
+				FinishedExpiration: conf.FinishedScheduleExpiration(),
+			},
+			Poller: &worker.AsynqPoller{
+				Client: conf.AsynqClient(),
+			},
 		},
 	)
 	if err != nil {

@@ -3,76 +3,113 @@ package conf
 import (
 	"fmt"
 	"os"
+	"time"
 
 	"github.com/beego/beego/v2/core/config"
+	"github.com/go-redis/redis/v8"
+	"github.com/hibiken/asynq"
 )
 
 const configData string = `
 pluginname = ${BKPAAS_APP_ID}
-runmode = ${BKPAAS_ENVIRONMENT||dev}
+runmode = ${BKPAAS_ENVIRONMENT}
 
-dbname = ${GCS_MYSQL_NAME}
-dbuser = ${GCS_MYSQL_USER}
-dbpasswd = ${GCS_MYSQL_PASSWORD}
-dbhost = ${GCS_MYSQL_HOST}
-dbport = ${GCS_MYSQL_PORT}
+redis_host = ${REDIS_HOST}
+redis_port = ${REDIS_PORT}
+redis_password = ${REDIS_PASSWORD}
 
-dev_dbname = ${BKPAAS_APP_ID}
-dev_dbuser = ${BK_PLUGIN_RUNTIME_DB_USER}
-dev_dbpasswd = ${BK_PLUGIN_RUNTIME_DB_PWD}
-dev_dbhost = ${BK_PLUGIN_RUNTIME_DB_HOST||127.0.0.1}
-dev_dbport = ${BK_PLUGIN_RUNTIME_DB_PORT||3306}
+schedule_expiration = ${SCHEDULE_EXPIRATION}
+finished_schedule_expiration = ${FINISHED_SCHEDULE_EXPIRATION}
+
+worker_concurrency = ${SCHEDULE_WORKER_CONCURRENCY}
 `
 
 var Settings config.Configer
-var DataBase DataBaseSetting
-var Port int
-
-const ()
-
-type DataBaseSetting struct {
-	User     string
-	Password string
-	Host     string
-	Port     string
-	DBName   string
-}
+var pluginName string
+var port int
+var workerNum int
+var redisAddr string
+var asynqClient *asynq.Client
+var redisClient *redis.Client
+var scheduleExpiration time.Duration
+var finishedScheduleExpiration time.Duration
+var workerConcurrency int
 
 func IsDevMode() bool {
 	return Settings.DefaultString("runmode", "dev") == "dev"
 }
 
+func initPluginName() {
+	pluginName = Settings.DefaultString("pluginname", "")
+}
+
+func PluginName() string {
+	return pluginName
+}
+
 func initServerPort() {
 	if IsDevMode() {
-		Port = 8000
+		port = 8000
 	} else {
-		Port = 5000
+		port = 5000
 	}
 }
 
-func initDataBase() {
-	configs := make(map[string]string, 5)
-	for _, key := range []string{"dbname", "dbuser", "dbpasswd", "dbhost", "dbport"} {
-		var val string
-		var err error
-		if IsDevMode() {
-			val, err = Settings.String(fmt.Sprintf("dev_%v", key))
-		} else {
-			val, err = Settings.String(key)
-		}
-		if err != nil {
-			fmt.Printf("settings %v read error: %v\n", key, err)
-			os.Exit(2)
-		}
-		configs[key] = val
-	}
-	DataBase = DataBaseSetting{
-		User:     configs["dbuser"],
-		Password: configs["dbpasswd"],
-		Host:     configs["dbhost"],
-		Port:     configs["dbport"],
-		DBName:   configs["dbname"],
-	}
+func Port() int {
+	return port
+}
+
+func initRedisAddr() {
+	redisAddr = fmt.Sprintf(
+		"%v:%v",
+		Settings.DefaultString("redis_host", "127.0.0.1"),
+		Settings.DefaultString("redis_port", "6379"),
+	)
+}
+
+func RedisAddr() string {
+	return redisAddr
+}
+
+func initRedisClient() {
+	redisClient = redis.NewClient(&redis.Options{
+		Addr:     redisAddr,
+		Password: Settings.DefaultString("redis_password", ""),
+		DB:       0,
+	})
+}
+
+func RedisClient() *redis.Client {
+	return redisClient
+}
+
+func initAsynqClient() {
+	asynqClient = asynq.NewClient(asynq.RedisClientOpt{Addr: redisAddr})
+}
+
+func AsynqClient() *asynq.Client {
+	return asynqClient
+}
+
+func initScheduleExpiration() {
+	scheduleExpiration = time.Duration(Settings.DefaultInt("schedule_expiration", 30)) * 24 * time.Hour
+	finishedScheduleExpiration = time.Duration(Settings.DefaultInt("schedule_expiration", 7)) * 24 * time.Hour
+}
+
+func ScheduleExpiration() time.Duration {
+	return scheduleExpiration
+}
+
+func FinishedScheduleExpiration() time.Duration {
+	return finishedScheduleExpiration
+}
+
+func initWorkerConcurrency() {
+	workerConcurrency = Settings.DefaultInt("worker_concurrency", 20)
+}
+
+func WorkerConcurrency() int {
+	return workerConcurrency
 }
 
 func init() {
@@ -83,8 +120,10 @@ func init() {
 		os.Exit(2)
 	}
 
-	// init database info
-	initDataBase()
-	// init server port info
 	initServerPort()
+	initRedisAddr()
+	initRedisClient()
+	initAsynqClient()
+	initScheduleExpiration()
+	initWorkerConcurrency()
 }

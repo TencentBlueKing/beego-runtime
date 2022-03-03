@@ -33,7 +33,7 @@ func (c *MetaController) Get() {
 			Message: "success",
 		},
 		Data: &MetaGetData{
-			Code:             conf.Settings.DefaultString("pluginname", ""),
+			Code:             conf.PluginName(),
 			Description:      "meta desciption",
 			Versions:         hub.GetPluginVersions(),
 			Language:         "go",

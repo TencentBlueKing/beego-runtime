@@ -7,7 +7,6 @@ import (
 
 	"github.com/beego/bee/v2/cmd"
 	"github.com/beego/beego/v2/core/logs"
-	_ "github.com/homholueng/beego-runtime/models"
 	_ "github.com/homholueng/beego-runtime/routers"
 )
 
@@ -31,12 +30,12 @@ func Run() {
 
 	switch args[0] {
 
-	case "migrate":
-		runMigrate()
 	case "server":
 		runServer()
 	case "collectstatics":
 		runCollectstatics()
+	case "worker":
+		runWorker()
 	default:
 		logs.Error("Unknown subcommand: %v", args[0])
 		os.Exit(2)
