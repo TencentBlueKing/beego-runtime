@@ -2,9 +2,8 @@ package runner
 
 import (
 	"fmt"
-	"os"
+	"log"
 
-	"github.com/beego/beego/v2/core/logs"
 	"github.com/beego/beego/v2/server/web"
 	"github.com/homholueng/beego-runtime/conf"
 	runtimeUtils "github.com/homholueng/beego-runtime/utils"
@@ -17,24 +16,22 @@ func runServer() {
 	if conf.IsDevMode() {
 		staticDir, err = runtimeUtils.GetStaticDirPath()
 		if err != nil {
-			logs.Error("get static files dir failed: %v", err)
-			os.Exit(2)
+			log.Fatalf("get static files dir failed: %v\n", err)
 		}
 	} else {
 		staticDir = "static"
 	}
-	logs.Info("serve /static at %v", staticDir)
+	log.Printf("serve /static at %v\n", staticDir)
 
 	if conf.IsDevMode() {
 		viewPath, err = runtimeUtils.GetViewPath()
 		if err != nil {
-			logs.Error("get view path failed: %v", err)
-			os.Exit(2)
+			log.Fatalf("get view path failed: %v\n", err)
 		}
 	} else {
 		viewPath = "views"
 	}
-	logs.Info("serve views at %v", viewPath)
+	log.Printf("serve views at %v\n", viewPath)
 
 	web.BConfig.CopyRequestBody = true
 	web.BConfig.WebConfig.ViewsPath = viewPath

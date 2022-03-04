@@ -13,6 +13,8 @@ import (
 const configData string = `
 pluginname = ${BKPAAS_APP_ID}
 runmode = ${BKPAAS_ENVIRONMENT}
+log_file_prefix = ${BKPAAS_LOG_NAME_PREFIX}
+process_type = ${BKPAAS_PROCESS_TYPE}
 
 redis_host = ${REDIS_HOST}
 redis_port = ${REDIS_PORT}
@@ -20,7 +22,6 @@ redis_password = ${REDIS_PASSWORD}
 
 schedule_expiration = ${SCHEDULE_EXPIRATION}
 finished_schedule_expiration = ${FINISHED_SCHEDULE_EXPIRATION}
-
 worker_concurrency = ${SCHEDULE_WORKER_CONCURRENCY}
 `
 

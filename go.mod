@@ -10,7 +10,9 @@ require (
 	github.com/google/uuid v1.2.0
 	github.com/hibiken/asynq v0.22.1
 	github.com/homholueng/bk-plugin-framework-go v0.2.1
+	github.com/sirupsen/logrus v1.6.0
 	golang.org/x/mod v0.4.2
+	gopkg.in/natefinch/lumberjack.v2 v2.0.0
 )
 
 require (
@@ -46,7 +48,6 @@ require (
 	github.com/prometheus/procfs v0.6.0 // indirect
 	github.com/robfig/cron/v3 v3.0.1 // indirect
 	github.com/shiena/ansicolor v0.0.0-20200904210342-c7312218db18 // indirect
-	github.com/sirupsen/logrus v1.6.0 // indirect
 	github.com/smartwalle/pongo2render v1.0.1 // indirect
 	github.com/spf13/afero v1.1.2 // indirect
 	github.com/spf13/cast v1.3.1 // indirect

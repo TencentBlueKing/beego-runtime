@@ -6,7 +6,6 @@ import (
 	"os"
 
 	"github.com/beego/bee/v2/cmd"
-	"github.com/beego/beego/v2/core/logs"
 	_ "github.com/homholueng/beego-runtime/routers"
 )
 
@@ -29,7 +28,6 @@ func Run() {
 	}
 
 	switch args[0] {
-
 	case "server":
 		runServer()
 	case "collectstatics":
@@ -37,7 +35,6 @@ func Run() {
 	case "worker":
 		runWorker()
 	default:
-		logs.Error("Unknown subcommand: %v", args[0])
-		os.Exit(2)
+		log.Fatalf("Unknown subcommand: %v\n", args[0])
 	}
 }

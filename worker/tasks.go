@@ -4,9 +4,9 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"log"
 
-	"github.com/beego/beego/v2/core/logs"
+	log "github.com/sirupsen/logrus"
+
 	"github.com/hibiken/asynq"
 	"github.com/homholueng/beego-runtime/conf"
 	"github.com/homholueng/beego-runtime/runtime"
@@ -32,7 +32,7 @@ func HandlePollTask(ctx context.Context, t *asynq.Task) error {
 	if err := json.Unmarshal(t.Payload(), &p); err != nil {
 		return fmt.Errorf("json.Unmarshal failed: %v: %w", err, asynq.SkipRetry)
 	}
-	log.Printf("poll schedule: traceID=%s", p.TraceID)
+	log.Info("poll schedule: traceID=%s", p.TraceID)
 
 	rss := runtime.RedisScheduleStore{
 		Client:             conf.RedisClient(),
@@ -42,7 +42,7 @@ func HandlePollTask(ctx context.Context, t *asynq.Task) error {
 
 	schedule, err := rss.Get(p.TraceID)
 	if err != nil {
-		logs.Error("schedule get error: %v", err)
+		log.Error("schedule get error: %v", err)
 		return err
 	}
 
@@ -54,7 +54,7 @@ func HandlePollTask(ctx context.Context, t *asynq.Task) error {
 
 	err = executor.Schedule(p.TraceID, schedule.PluginVersion, schedule.InvokeCount+1, &reader, runtime)
 	if err != nil {
-		logs.Error("schedule execute error: %v", err)
+		log.Error("schedule execute error: %v", err)
 	}
 	return err
 }
