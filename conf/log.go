@@ -19,7 +19,7 @@ func randSeq(n int) string {
 	return string(b)
 }
 
-func init() {
+func setupLog() {
 	if IsDevMode() {
 		return
 	}

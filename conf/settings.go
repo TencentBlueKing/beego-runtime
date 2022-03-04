@@ -141,4 +141,5 @@ func init() {
 	initAsynqClient()
 	initScheduleExpiration()
 	initWorkerConcurrency()
+	setupLog()
 }
