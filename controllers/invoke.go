@@ -39,9 +39,11 @@ type InvokePostResponse struct {
 func (c *InvokeController) Post() {
 	traceID := strings.Replace(uuid.NewString(), "-", "", -1)
 	version := c.Ctx.Input.Param(":version")
+	traceLogger := log.WithField("trace_id", traceID)
 
 	var param InvokePostParam
 	if err := c.BindJSON(&param); err != nil {
+		traceLogger.Errorf("param bind error: %v\n", err)
 		c.Data["json"] = &InvokePostResponse{
 			BaseResponse: &BaseResponse{
 				Result:  false,
@@ -76,10 +78,11 @@ func (c *InvokeController) Post() {
 				Client: conf.AsynqClient(),
 			},
 		},
-		log.WithField("trace_id", traceID),
+		traceLogger,
 	)
 
 	if err != nil {
+		traceLogger.Errorf("param bind error: %v\n", err)
 		c.Data["json"] = &InvokePostResponse{
 			BaseResponse: &BaseResponse{
 				Result:  false,

@@ -32,7 +32,8 @@ func HandlePollTask(ctx context.Context, t *asynq.Task) error {
 	if err := json.Unmarshal(t.Payload(), &p); err != nil {
 		return fmt.Errorf("json.Unmarshal failed: %v: %w", err, asynq.SkipRetry)
 	}
-	log.WithField("trace_id", p.TraceID).Printf("poll schedule: traceID=%s", p.TraceID)
+	traceLogger := log.WithField("trace_id", p.TraceID)
+	traceLogger.Info("prepare schedule")
 
 	rss := runtime.RedisScheduleStore{
 		Client:             conf.RedisClient(),
@@ -42,7 +43,7 @@ func HandlePollTask(ctx context.Context, t *asynq.Task) error {
 
 	schedule, err := rss.Get(p.TraceID)
 	if err != nil {
-		log.Error("schedule get error: %v", err)
+		traceLogger.Errorf("schedule get error: %v\n", err)
 		return err
 	}
 
@@ -58,7 +59,7 @@ func HandlePollTask(ctx context.Context, t *asynq.Task) error {
 		schedule.InvokeCount+1,
 		&reader,
 		runtime,
-		log.WithField("trace_id", p.TraceID),
+		traceLogger,
 	)
 	if err != nil {
 		log.Error("schedule execute error: %v", err)
