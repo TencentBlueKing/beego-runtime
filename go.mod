@@ -9,7 +9,7 @@ require (
 	github.com/go-redis/redis/v8 v8.11.4
 	github.com/google/uuid v1.2.0
 	github.com/hibiken/asynq v0.22.1
-	github.com/homholueng/bk-plugin-framework-go v0.2.2
+	github.com/homholueng/bk-plugin-framework-go v0.2.3
 	github.com/sirupsen/logrus v1.8.1
 	golang.org/x/mod v0.4.2
 	gopkg.in/natefinch/lumberjack.v2 v2.0.0
