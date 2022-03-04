@@ -52,7 +52,14 @@ func HandlePollTask(ctx context.Context, t *asynq.Task) error {
 	}
 	runtime := runtime.NewScheduleExecuteRuntime(schedule, &rss, &AsynqPoller{Client: conf.AsynqClient()})
 
-	err = executor.Schedule(p.TraceID, schedule.PluginVersion, schedule.InvokeCount+1, &reader, runtime)
+	err = executor.Schedule(
+		p.TraceID,
+		schedule.PluginVersion,
+		schedule.InvokeCount+1,
+		&reader,
+		runtime,
+		log.WithField("trace_id", p.TraceID),
+	)
 	if err != nil {
 		log.Error("schedule execute error: %v", err)
 	}

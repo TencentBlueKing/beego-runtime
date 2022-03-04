@@ -12,6 +12,7 @@ import (
 	"github.com/homholueng/beego-runtime/worker"
 	"github.com/homholueng/bk-plugin-framework-go/constants"
 	"github.com/homholueng/bk-plugin-framework-go/executor"
+	log "github.com/sirupsen/logrus"
 )
 
 type InvokeController struct {
@@ -75,7 +76,9 @@ func (c *InvokeController) Post() {
 				Client: conf.AsynqClient(),
 			},
 		},
+		log.WithField("trace_id", traceID),
 	)
+
 	if err != nil {
 		c.Data["json"] = &InvokePostResponse{
 			BaseResponse: &BaseResponse{

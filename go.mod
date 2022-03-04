@@ -9,8 +9,8 @@ require (
 	github.com/go-redis/redis/v8 v8.11.4
 	github.com/google/uuid v1.2.0
 	github.com/hibiken/asynq v0.22.1
-	github.com/homholueng/bk-plugin-framework-go v0.2.1
-	github.com/sirupsen/logrus v1.6.0
+	github.com/homholueng/bk-plugin-framework-go v0.2.2
+	github.com/sirupsen/logrus v1.8.1
 	golang.org/x/mod v0.4.2
 	gopkg.in/natefinch/lumberjack.v2 v2.0.0
 )
@@ -31,7 +31,6 @@ require (
 	github.com/hashicorp/golang-lru v0.5.4 // indirect
 	github.com/hashicorp/hcl v1.0.0 // indirect
 	github.com/iancoleman/orderedmap v0.0.0-20190318233801-ac98e3ecb4b0 // indirect
-	github.com/konsorten/go-windows-terminal-sequences v1.0.3 // indirect
 	github.com/kr/text v0.2.0 // indirect
 	github.com/lib/pq v1.10.2 // indirect
 	github.com/magiconair/properties v1.8.1 // indirect
