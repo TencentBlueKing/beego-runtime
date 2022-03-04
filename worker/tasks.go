@@ -32,7 +32,7 @@ func HandlePollTask(ctx context.Context, t *asynq.Task) error {
 	if err := json.Unmarshal(t.Payload(), &p); err != nil {
 		return fmt.Errorf("json.Unmarshal failed: %v: %w", err, asynq.SkipRetry)
 	}
-	log.Info("poll schedule: traceID=%s", p.TraceID)
+	log.WithField("trace_id", p.TraceID).Printf("poll schedule: traceID=%s", p.TraceID)
 
 	rss := runtime.RedisScheduleStore{
 		Client:             conf.RedisClient(),
