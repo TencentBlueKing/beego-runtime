@@ -9,5 +9,7 @@ type MainController struct {
 }
 
 func (c *MainController) Get() {
+	c.Data["BK_STATIC_URL"] = "/static"
+	c.Data["SITE_URL"] = "/bk_plugin"
 	c.TplName = "debug_panel.tpl"
 }
