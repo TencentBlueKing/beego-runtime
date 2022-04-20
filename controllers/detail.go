@@ -16,6 +16,7 @@ type DetailGetData struct {
 	Inputs        map[string]interface{} `json:"inputs"`
 	ContextInputs map[string]interface{} `json:"context_inputs"`
 	Outputs       map[string]interface{} `json:"outputs"`
+	Forms         map[string]interface{} `json:"forms"`
 }
 
 type DetailGetResponse struct {
@@ -48,6 +49,7 @@ func (c *DetailController) Get() {
 			Inputs:        detail.InputsSchemaJSON(),
 			ContextInputs: detail.ContextInputsSchemaJSON(),
 			Outputs:       detail.OutputsSchemaJSON(),
+			Forms:         map[string]interface{}{"renderform": nil},
 		},
 	}
 	c.ServeJSON()
