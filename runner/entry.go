@@ -34,6 +34,8 @@ func Run() {
 		runCollectstatics()
 	case "worker":
 		runWorker()
+	case "syncapigw":
+		runSyncApigw()
 	default:
 		log.Fatalf("Unknown subcommand: %v\n", args[0])
 	}
