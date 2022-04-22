@@ -25,6 +25,7 @@ func runSyncApigw() {
 	// create manager
 	config := bkapi.ClientConfig{
 		Endpoint:  conf.ApigwEndpoint(),
+		Stage:     conf.Environment(),
 		AppCode:   conf.PluginName(),
 		AppSecret: conf.PluginSecret(),
 	}
