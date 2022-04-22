@@ -8,6 +8,24 @@ import (
 	"golang.org/x/mod/module"
 )
 
+func GetApigwDefinitionPath() (string, error) {
+	baseDir, err := GetModulePath("github.com/homholueng/beego-runtime", info.Version())
+	if err != nil {
+		return "", err
+	}
+
+	return path.Join(baseDir, "data/api-definition.yml"), nil
+}
+
+func GetApigwResourcesPath() (string, error) {
+	baseDir, err := GetModulePath("github.com/homholueng/beego-runtime", info.Version())
+	if err != nil {
+		return "", err
+	}
+
+	return path.Join(baseDir, "data/api-resources.yml"), nil
+}
+
 func GetStaticDirPath() (string, error) {
 	baseDir, err := GetModulePath("github.com/homholueng/beego-runtime", info.Version())
 	if err != nil {

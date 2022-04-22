@@ -4,29 +4,38 @@ import (
 	"log"
 	"os/exec"
 
-	runtimeUtils "github.com/homholueng/beego-runtime/utils"
+	"github.com/homholueng/beego-runtime/utils"
 )
 
 func runCollectstatics() {
-	staticDir, err := runtimeUtils.GetStaticDirPath()
+	staticDir, err := utils.GetStaticDirPath()
 	if err != nil {
 		log.Fatalf("get static files dir failed: %v\n", err)
 	}
-	viewPath, err := runtimeUtils.GetViewPath()
+	viewPath, err := utils.GetViewPath()
 	if err != nil {
 		log.Fatalf("get view path failed: %v\n", err)
 	}
-
-	cpStaticCmd := exec.Command("cp", "-r", staticDir, ".")
-	cpViewCmd := exec.Command("cp", "-r", viewPath, ".")
-
-	log.Printf("run collect static command: %v\n", cpStaticCmd)
-	if err := cpStaticCmd.Run(); err != nil {
-		log.Fatalf("collect static failed: %v\n", err)
+	definitionPath, err := utils.GetApigwDefinitionPath()
+	if err != nil {
+		log.Fatalf("get apigw definition path failed: %v\n", err)
+	}
+	resourcesPath, err := utils.GetApigwResourcesPath()
+	if err != nil {
+		log.Fatalf("get apigw resources path failed: %v\n", err)
 	}
 
-	log.Printf("run collect view command: %v\n", cpViewCmd)
-	if err := cpViewCmd.Run(); err != nil {
-		log.Fatalf("collect view failed: %v\n", err)
+	cmds := []*exec.Cmd{
+		exec.Command("cp", "-r", staticDir, "."),
+		exec.Command("cp", "-r", viewPath, "."),
+		exec.Command("cp", "-r", definitionPath, "."),
+		exec.Command("cp", "-r", resourcesPath, "."),
+	}
+
+	for _, c := range cmds {
+		log.Printf("run collect static command: %v\n", c)
+		if err := c.Run(); err != nil {
+			log.Fatalf("collect static failed: %v\n", err)
+		}
 	}
 }

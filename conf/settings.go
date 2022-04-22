@@ -3,6 +3,7 @@ package conf
 import (
 	"fmt"
 	"os"
+	"strings"
 	"time"
 
 	"github.com/beego/beego/v2/core/config"
@@ -11,10 +12,12 @@ import (
 )
 
 const configData string = `
-pluginname = ${BKPAAS_APP_ID}
-runmode = ${BKPAAS_ENVIRONMENT}
+plugin_name = ${BKPAAS_APP_ID}
+plugin_secret = ${BKPAAS_APP_SECRET}
+environment = ${BKPAAS_ENVIRONMENT}
 log_file_prefix = ${BKPAAS_LOG_NAME_PREFIX}
 process_type = ${BKPAAS_PROCESS_TYPE}
+app_default_subdomains = ${BKPAAS_ENGINE_APP_DEFAULT_SUBDOMAINS}
 
 redis_host = ${REDIS_HOST}
 redis_port = ${REDIS_PORT}
@@ -23,12 +26,19 @@ redis_password = ${REDIS_PASSWORD}
 schedule_expiration = ${SCHEDULE_EXPIRATION}
 finished_schedule_expiration = ${FINISHED_SCHEDULE_EXPIRATION}
 worker_concurrency = ${SCHEDULE_WORKER_CONCURRENCY}
+
+apigw_api_name = ${BKPAAS_BK_PLUGIN_APIGW_NAME}
+apigw_endpoint = ${BK_APIGW_MANAGER_URL_TEMPL}
 `
 
 var Settings config.Configer
+
 var pluginName string
+var pluginSecret string
+var environment string
 var port int
-var workerNum int
+var apigwBackendHost string
+
 var redisAddr string
 var redisPassword string
 var asynqClient *asynq.Client
@@ -37,16 +47,35 @@ var scheduleExpiration time.Duration
 var finishedScheduleExpiration time.Duration
 var workerConcurrency int
 
+var apigwEndpoint string
+var apigwApiName string
+
 func IsDevMode() bool {
-	return Settings.DefaultString("runmode", "dev") == "dev"
+	return Settings.DefaultString("environment", "dev") == "dev"
 }
 
 func initPluginName() {
-	pluginName = Settings.DefaultString("pluginname", "")
+	pluginName = Settings.DefaultString("plugin_name", "")
 }
 
 func PluginName() string {
 	return pluginName
+}
+
+func initPluginSecret() {
+	pluginSecret = Settings.DefaultString("plugin_secret", "")
+}
+
+func PluginSecret() string {
+	return pluginSecret
+}
+
+func initEnvironment() {
+	environment = Settings.DefaultString("environment", "dev")
+}
+
+func Environment() string {
+	return environment
 }
 
 func initServerPort() {
@@ -59,6 +88,15 @@ func initServerPort() {
 
 func Port() int {
 	return port
+}
+
+func initApigwBackendHost() {
+	subdomains := Settings.DefaultString("app_default_subdomains", "")
+	apigwBackendHost = strings.Split(subdomains, ";")[0]
+}
+
+func ApigwBackendHost() string {
+	return apigwBackendHost
 }
 
 func initRedisAddr() {
@@ -126,6 +164,22 @@ func WorkerConcurrency() int {
 	return workerConcurrency
 }
 
+func initApigwEndpoint() {
+	apigwEndpoint = Settings.DefaultString("apigw_endpoint", "")
+}
+
+func ApigwEndpoint() string {
+	return apigwEndpoint
+}
+
+func initApigwApiName() {
+	apigwApiName = Settings.DefaultString("apigw_api_name", "'")
+}
+
+func ApigwApiName() string {
+	return apigwApiName
+}
+
 func init() {
 	var err error
 	Settings, err = config.NewConfigData("ini", []byte(configData))
@@ -134,6 +188,9 @@ func init() {
 		os.Exit(2)
 	}
 
+	initPluginName()
+	initPluginSecret()
+	initEnvironment()
 	initServerPort()
 	initRedisAddr()
 	initRedisPassword()
@@ -141,5 +198,7 @@ func init() {
 	initAsynqClient()
 	initScheduleExpiration()
 	initWorkerConcurrency()
+	initApigwEndpoint()
+	initApigwApiName()
 	setupLog()
 }
