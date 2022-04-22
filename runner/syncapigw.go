@@ -3,6 +3,7 @@ package runner
 import (
 	"fmt"
 	"log"
+	"time"
 
 	"github.com/TencentBlueKing/bk-apigateway-sdks/core/bkapi"
 	"github.com/TencentBlueKing/bk-apigateway-sdks/manager"
@@ -33,8 +34,9 @@ func runSyncApigw() {
 		config,
 		definitionPath,
 		map[string]interface{}{
-			"BK_PLUGIN_APIGW_STAGE_NAME":   conf.Environment(),
-			"BK_PLUGIN_APIGW_BACKEND_HOST": conf.ApigwBackendHost(),
+			"BK_PLUGIN_APIGW_STAGE_NAME":       conf.Environment(),
+			"BK_PLUGIN_APIGW_BACKEND_HOST":     conf.ApigwBackendHost(),
+			"BK_PLUGIN_APIGW_RESOURCE_VERSION": fmt.Sprintf("1.0.0+%v", time.Now().Unix()),
 		},
 	)
 	if err != nil {
@@ -58,17 +60,20 @@ func runSyncApigw() {
 		log.Fatalf("sync apigw stage error :%v\n", err)
 	}
 
-	_, err = resourcesManager.SyncResourcesConfig("")
+	syncResourcesRes, err := resourcesManager.SyncResourcesConfig("")
+	fmt.Printf("sync apigw resources return: %v\n", syncResourcesRes)
 	if err != nil {
-		log.Fatalf("sync apigw resource config error :%v\n", err)
+		log.Fatalf("sync apigw resources error :%v\n", err)
 	}
 
-	_, err = definitionManager.CreateResourceVersion("resource_version")
+	createResourceRes, err := definitionManager.CreateResourceVersion("resource_version")
+	fmt.Printf("create apigw resources version return: %v\n", createResourceRes)
 	if err != nil {
 		log.Fatalf("create resource version error :%v\n", err)
 	}
 
-	_, err = definitionManager.Release("release")
+	releaseRes, err := definitionManager.Release("release")
+	fmt.Printf("release stage return: %v\n", releaseRes)
 	if err != nil {
 		log.Fatalf("release stage error :%v\n", err)
 	}

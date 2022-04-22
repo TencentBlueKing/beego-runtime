@@ -1,13 +1,17 @@
 stage:
-  name: {{ BK_PLUGIN_APIGW_STAGE_NAME }}
+  name: {{ data.BK_PLUGIN_APIGW_STAGE_NAME }}
   vars: {}
   proxy_http:
     timeout: 60
     upstreams:
       loadbalance: "roundrobin"
       hosts:
-        - host: "http://{{ BK_PLUGIN_APIGW_BACKEND_HOST }}/"
+        - host: "http://{{ data.BK_PLUGIN_APIGW_BACKEND_HOST }}/"
           weight: 100
+
+resource_version:
+  title: "auto-release-version"
+  version: "{{ data.BK_PLUGIN_APIGW_RESOURCE_VERSION }}"
 
 release:
   comment: "auto release by bk-plugin-runtime"
