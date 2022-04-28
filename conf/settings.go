@@ -200,5 +200,6 @@ func init() {
 	initWorkerConcurrency()
 	initApigwEndpoint()
 	initApigwApiName()
+	initApigwBackendHost()
 	setupLog()
 }

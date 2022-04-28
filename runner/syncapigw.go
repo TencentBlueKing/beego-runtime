@@ -9,9 +9,11 @@ import (
 	"github.com/TencentBlueKing/bk-apigateway-sdks/manager"
 	"github.com/homholueng/beego-runtime/conf"
 	"github.com/homholueng/beego-runtime/utils"
+	"github.com/sirupsen/logrus"
 )
 
 func runSyncApigw() {
+	logger := logrus.New()
 	// load data path
 	definitionPath, err := utils.GetApigwDefinitionPath()
 	if err != nil {
@@ -25,12 +27,11 @@ func runSyncApigw() {
 	// create manager
 	config := bkapi.ClientConfig{
 		Endpoint:  conf.ApigwEndpoint(),
-		Stage:     conf.Environment(),
 		AppCode:   conf.PluginName(),
 		AppSecret: conf.PluginSecret(),
 	}
 
-	definitionManager, err := manager.NewManagerFrom(
+	manager, err := manager.NewManagerFrom(
 		conf.ApigwApiName(),
 		config,
 		definitionPath,
@@ -38,43 +39,34 @@ func runSyncApigw() {
 			"BK_PLUGIN_APIGW_STAGE_NAME":       conf.Environment(),
 			"BK_PLUGIN_APIGW_BACKEND_HOST":     conf.ApigwBackendHost(),
 			"BK_PLUGIN_APIGW_RESOURCE_VERSION": fmt.Sprintf("1.0.0+%v", time.Now().Unix()),
+			"RESOURCES_FILE_PATH":              resourcesPath,
 		},
 	)
 	if err != nil {
-		log.Fatalf("create apigw definition manager error :%v\n", err)
-	}
-
-	resourcesManager, err := manager.NewManagerFrom(
-		conf.ApigwApiName(),
-		config,
-		resourcesPath,
-		nil,
-	)
-	if err != nil {
-		log.Fatalf("create apigw resources manager error :%v\n", err)
+		log.Fatalf("create apigw  manager error :%v\n", err)
 	}
 
 	// sync start
-	syncStageRes, err := definitionManager.SyncStageConfig("stage")
-	fmt.Printf("sync apigw stage return: %v\n", syncStageRes)
+	syncStageRes, err := manager.SyncStageConfig("stage")
+	logger.Printf("sync apigw stage return: %v\n", syncStageRes)
 	if err != nil {
 		log.Fatalf("sync apigw stage error :%v\n", err)
 	}
 
-	syncResourcesRes, err := resourcesManager.SyncResourcesConfig("")
-	fmt.Printf("sync apigw resources return: %v\n", syncResourcesRes)
+	syncResourcesRes, err := manager.SyncResourcesConfig("")
+	logger.Printf("sync apigw resources return: %v\n", syncResourcesRes)
 	if err != nil {
 		log.Fatalf("sync apigw resources error :%v\n", err)
 	}
 
-	createResourceRes, err := definitionManager.CreateResourceVersion("resource_version")
-	fmt.Printf("create apigw resources version return: %v\n", createResourceRes)
+	createResourceRes, err := manager.CreateResourceVersion("resource_version")
+	logger.Printf("create apigw resources version return: %v\n", createResourceRes)
 	if err != nil {
 		log.Fatalf("create resource version error :%v\n", err)
 	}
 
-	releaseRes, err := definitionManager.Release("release")
-	fmt.Printf("release stage return: %v\n", releaseRes)
+	releaseRes, err := manager.Release("release")
+	logger.Printf("release stage return: %v\n", releaseRes)
 	if err != nil {
 		log.Fatalf("release stage error :%v\n", err)
 	}

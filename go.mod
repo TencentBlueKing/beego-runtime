@@ -4,7 +4,7 @@ go 1.17
 
 require github.com/beego/beego/v2 v2.0.2
 
-require github.com/TencentBlueKing/bk-apigateway-sdks v0.1.5
+require github.com/TencentBlueKing/bk-apigateway-sdks v0.1.6
 
 require (
 	github.com/beego/bee/v2 v2.0.2
