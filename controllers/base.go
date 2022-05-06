@@ -16,7 +16,7 @@ type BaseResponse struct {
 }
 
 func parseApigwJWT(r *http.Request) (manager.ApigatewayJwtClaims, error) {
-	jwt, ok := r.Header["HTTP_X_BKAPI_JWT"]
+	jwt, ok := r.Header["X-Bkapi-Jwt"]
 	if !ok {
 		return manager.ApigatewayJwtClaims{}, errors.Errorf("can not find HTTP_X_BKAPI_JWT header in request")
 	}
