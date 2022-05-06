@@ -38,8 +38,24 @@ type InvokePostResponse struct {
 
 func (c *InvokeController) Post() {
 	traceID := strings.Replace(uuid.NewString(), "-", "", -1)
-	version := c.Ctx.Input.Param(":version")
 	traceLogger := log.WithField("trace_id", traceID)
+	traceLogger.Info("request headers:", c.Ctx.Request.Header)
+
+	_, err := parseApigwJWT(c.Ctx.Request)
+	if err != nil {
+		c.Data["json"] = &InvokePostResponse{
+			BaseResponse: &BaseResponse{
+				Result:  false,
+				Message: fmt.Sprintf("please make sure request is from apigw, %v", err),
+			},
+			TraceID: traceID,
+			Data:    &InvokePostData{},
+		}
+		c.ServeJSON()
+		return
+	}
+
+	version := c.Ctx.Input.Param(":version")
 
 	var param InvokePostParam
 	if err := c.BindJSON(&param); err != nil {
