@@ -53,7 +53,7 @@ func runSyncApigw() {
 		log.Fatalf("sync apigw stage error :%v\n", err)
 	}
 
-	syncResourcesRes, err := manager.SyncResourcesConfig("")
+	syncResourcesRes, err := manager.SyncResourcesConfig("resources")
 	logger.Printf("sync apigw resources return: %v\n", syncResourcesRes)
 	if err != nil {
 		log.Fatalf("sync apigw resources error :%v\n", err)
