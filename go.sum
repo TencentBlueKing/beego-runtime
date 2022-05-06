@@ -19,10 +19,10 @@ github.com/Knetic/govaluate v3.0.1-0.20171022003610-9aa49832a739+incompatible/go
 github.com/OneOfOne/xxhash v1.2.2/go.mod h1:HSdplMjZKSmBqAxg5vPj2TmRDmfkzw+cTzAElWljhcU=
 github.com/Shopify/sarama v1.19.0/go.mod h1:FVkBWblsNy7DGZRfXLU0O9RCGt5g3g3yEuWXgklEdEo=
 github.com/Shopify/toxiproxy v2.1.4+incompatible/go.mod h1:OXgGpZ6Cli1/URJOF1DMxUHB2q5Ap20/P/eIdh4G0pI=
-github.com/TencentBlueKing/bk-apigateway-sdks v0.1.6 h1:F/FkID6RIC7vbfa9oyWHD3DohrCgUAk8iuBdEq2H+JU=
-github.com/TencentBlueKing/bk-apigateway-sdks v0.1.6/go.mod h1:RhBbNXjRyFQF2C72wcSq8cwgQpNT5cidOCpdjrAtmkc=
-github.com/TencentBlueKing/gopkg v1.0.8 h1:yo0Od1SVXRmrH3XTaN2/viijbSGgrGIsHOyAcT8m068=
-github.com/TencentBlueKing/gopkg v1.0.8/go.mod h1:C8xV79ap0bF2pR10YfhsxO5w5LtJlPakrRunkRbl2yw=
+github.com/TencentBlueKing/bk-apigateway-sdks v0.1.7 h1:fnElPrslcxkypJb5Ez/hiKBWWiU2xQEiwwVcEjUrfTU=
+github.com/TencentBlueKing/bk-apigateway-sdks v0.1.7/go.mod h1:VmoEorUBtVswRasVgjhOUwAzyOPwDLwSp/D/mz2+AOY=
+github.com/TencentBlueKing/gopkg v1.0.9 h1:23kSBaLyFaK4aUgmQUD6NW1x/6jn7UDiW3CQMdjLXTw=
+github.com/TencentBlueKing/gopkg v1.0.9/go.mod h1:C8xV79ap0bF2pR10YfhsxO5w5LtJlPakrRunkRbl2yw=
 github.com/VividCortex/gohistogram v1.0.0/go.mod h1:Pf5mBqqDxYaXu3hDrrU+w6nw50o/4+TcAqDqk/vUH7g=
 github.com/afex/hystrix-go v0.0.0-20180502004556-fa1af6a1f4f5/go.mod h1:SkGFH1ia65gfNATL8TAiHDNxPzPdmEL5uirI2Uyuz6c=
 github.com/alecthomas/jsonschema v0.0.0-20220203024042-cc89723c9db0 h1:mK8XdNGiqF1l7iUvhPxNZo8butfcosaxe794sRRJn3U=
