@@ -17,5 +17,6 @@ resources:
   include_file: {{ data.RESOURCES_FILE_PATH }}
 
 release:
+  title: "auto-release-version"
   comment: "auto release by bk-plugin-runtime"
   version: {{ data.BK_PLUGIN_APIGW_RESOURCE_VERSION }}
