@@ -19,5 +19,6 @@ resources:
 release:
   version: {{ data.BK_PLUGIN_APIGW_RESOURCE_VERSION }}
   resource_version_name: "auto-release-version"
-  stage_names: {{ data.BK_PLUGIN_APIGW_STAGE_NAME }}
+  stage_names: 
+    - {{ data.BK_PLUGIN_APIGW_STAGE_NAME }}
   comment: "auto release by bk-plugin-runtime"
