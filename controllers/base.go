@@ -7,6 +7,7 @@ import (
 	"github.com/TencentBlueKing/bk-apigateway-sdks/core/bkapi"
 	"github.com/TencentBlueKing/bk-apigateway-sdks/manager"
 	"github.com/homholueng/beego-runtime/conf"
+	"github.com/pkg/errors"
 )
 
 type BaseResponse struct {
@@ -15,7 +16,10 @@ type BaseResponse struct {
 }
 
 func parseApigwJWT(r *http.Request) (manager.ApigatewayJwtClaims, error) {
-	jwt := r.Header["HTTP_X_BKAPI_JWT"][0]
+	jwt, ok := r.Header["HTTP_X_BKAPI_JWT"]
+	if !ok {
+		return manager.ApigatewayJwtClaims{}, errors.Errorf("can not find HTTP_X_BKAPI_JWT header in request")
+	}
 	config := bkapi.ClientConfig{
 		Endpoint:  conf.ApigwEndpoint(),
 		AppCode:   conf.PluginName(),
@@ -25,5 +29,5 @@ func parseApigwJWT(r *http.Request) (manager.ApigatewayJwtClaims, error) {
 		return manager.NewDefaultManager(apiName, config)
 	})
 	jwtParser := manager.NewRsaJwtTokenParser(cache)
-	return jwtParser.Parse(jwt)
+	return jwtParser.Parse(jwt[0])
 }
