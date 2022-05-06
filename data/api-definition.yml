@@ -6,17 +6,18 @@ stage:
     upstreams:
       loadbalance: "roundrobin"
       hosts:
-        - host: "http://{{ data.BK_PLUGIN_APIGW_BACKEND_HOST }}/"
+        - host: http://{{ data.BK_PLUGIN_APIGW_BACKEND_HOST }}/
           weight: 100
 
 resource_version:
   title: "auto-release-version"
-  version: "{{ data.BK_PLUGIN_APIGW_RESOURCE_VERSION }}"
+  version: {{ data.BK_PLUGIN_APIGW_RESOURCE_VERSION }}
 
 resources:
   include_file: {{ data.RESOURCES_FILE_PATH }}
 
 release:
-  title: "auto-release-version"
+  version: {{ data.BK_PLUGIN_APIGW_RESOURCE_VERSION }}
+  resource_version_name: "auto-release-version"
+  stage_names: {{ data.BK_PLUGIN_APIGW_STAGE_NAME }}
   comment: "auto release by bk-plugin-runtime"
-  resource_version_name: {{ data.BK_PLUGIN_APIGW_RESOURCE_VERSION }}
