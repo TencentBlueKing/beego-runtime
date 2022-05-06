@@ -18,3 +18,4 @@ resources:
 
 release:
   comment: "auto release by bk-plugin-runtime"
+  version: {{ data.BK_PLUGIN_APIGW_RESOURCE_VERSION }}
