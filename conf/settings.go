@@ -29,6 +29,9 @@ worker_concurrency = ${SCHEDULE_WORKER_CONCURRENCY}
 
 apigw_api_name = ${BKPAAS_BK_PLUGIN_APIGW_NAME}
 apigw_endpoint = ${BK_APIGW_MANAGER_URL_TEMPL}
+
+user_token_key_name = ${USER_TOKEN_KEY_NAME}
+plugin_api_debug_username = ${PLUGIN_API_DEBUG_USERNAME}
 `
 
 var Settings config.Configer
@@ -49,6 +52,9 @@ var workerConcurrency int
 
 var apigwEndpoint string
 var apigwApiName string
+
+var userTokenKeyName string
+var pluginApiDebugUsername string
 
 func IsDevMode() bool {
 	return Settings.DefaultString("environment", "dev") == "dev"
@@ -179,6 +185,29 @@ func initApigwApiName() {
 func ApigwApiName() string {
 	return apigwApiName
 }
+func initUserTokenKeyName() {
+	var tokenDefaultKey string
+	if IsDevMode() {
+		tokenDefaultKey = "bk_token"
+	} else {
+		tokenDefaultKey = "jwt"
+	}
+	userTokenKeyName = Settings.DefaultString("user_token_key_name", tokenDefaultKey)
+}
+
+func UserTokenKeyName() string {
+	return userTokenKeyName
+}
+func initPluginApiDebugUsername() {
+	pluginApiDebugUsername = Settings.DefaultString("plugin_api_debug_username", "")
+	if !IsDevMode() {
+		pluginApiDebugUsername = ""
+	}
+}
+
+func PluginApiDebugUsername() string {
+	return pluginApiDebugUsername
+}
 
 func init() {
 	var err error
@@ -202,4 +231,7 @@ func init() {
 	initApigwApiName()
 	initApigwBackendHost()
 	setupLog()
+
+	initUserTokenKeyName()
+	initPluginApiDebugUsername()
 }
