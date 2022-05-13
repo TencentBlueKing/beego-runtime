@@ -47,7 +47,7 @@ func (p *PluginApiController) Prepare() {
 
 	token := ""
 	username := ""
-	if !conf.IsDevMode() {
+	if conf.IsDevMode() {
 		bkUid, err := p.Ctx.Request.Cookie("bk_uid")
 		if err != nil {
 			username = conf.PluginApiDebugUsername()
@@ -65,18 +65,6 @@ func (p *PluginApiController) Prepare() {
 			token = bkToken.Value
 		}
 	} else {
-		bkUid, err := p.Ctx.Request.Cookie("bk_uid")
-		if err != nil {
-			logger.Errorf("[Plugin Api Product] get username fail")
-			p.Data["json"] = &PluginApiBaseResponse{
-				Result:  false,
-				Message: "This API get username fail",
-			}
-			p.ServeJSON()
-		} else {
-			username = bkUid.Value
-		}
-
 		bkToken, ok := p.Ctx.Request.Header["X-Bkapi-Jwt"]
 		if !ok {
 			logger.Errorf("[Plugin Api Product] This API can only be accessed through API gateway")
@@ -87,6 +75,18 @@ func (p *PluginApiController) Prepare() {
 			p.ServeJSON()
 		} else {
 			token = bkToken[0]
+		}
+
+		claims, err := parseApigwJWT(p.Ctx.Request)
+		if err != nil {
+			logger.Errorf("[Plugin Api Product] This API can only be accessed through API gateway")
+			p.Data["json"] = &PluginApiBaseResponse{
+				Result:  false,
+				Message: "This API can only be accessed through API gateway",
+			}
+			p.ServeJSON()
+		} else {
+			username = claims.User.Username
 		}
 	}
 	p.SetUser(username, token)
@@ -100,6 +100,7 @@ func (p *PluginApiController) GetBkapiAuthorizationInfo() string {
 	}
 
 	if !conf.IsDevMode() {
+		// TO DO: Get App access_token
 		authInfo["access_token"] = "access_token"
 	}
 	b, _ := json.Marshal(authInfo)
