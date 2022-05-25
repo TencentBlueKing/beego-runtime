@@ -12,12 +12,16 @@
 package controllers
 
 import (
+	"net/http"
+	"strings"
+
 	beego "github.com/beego/beego/v2/server/web"
+	"github.com/google/uuid"
 	"github.com/homholueng/beego-runtime/conf"
 
 	"encoding/json"
 
-	"github.com/sirupsen/logrus"
+	log "github.com/sirupsen/logrus"
 )
 
 type BKUser struct {
@@ -35,7 +39,7 @@ type PluginApiBaseResponse struct {
 	Message string `json:"message"`
 }
 
-func (p *PluginApiController) SetUser(username string, token string) {
+func (p *PluginApiController) setUser(username string, token string) {
 	p.User = BKUser{
 		Username: username,
 		Token:    token,
@@ -43,15 +47,17 @@ func (p *PluginApiController) SetUser(username string, token string) {
 }
 
 func (p *PluginApiController) Prepare() {
-	logger := logrus.New()
+	pluginApiTraceID := strings.Replace(uuid.NewString(), "-", "", -1)
+	pluginApiLogger := log.WithField("plugin_api_trace_id", pluginApiTraceID)
+	pluginApiLogger.Infof("request plugin api %v", p.Ctx.Request.URL.Path)
 
 	token := ""
 	username := ""
 	if conf.IsDevMode() {
 		bkUid, err := p.Ctx.Request.Cookie("bk_uid")
-		if err != nil {
+		if err == http.ErrNoCookie {
 			username = conf.PluginApiDebugUsername()
-			logger.Infof("[Plugin Api Debug] Get bk_uid as username from cookie fail,use env PLUGIN_API_DEBUG_USERNAME[%v] as username", username)
+			pluginApiLogger.Infof("Get bk_uid as username from cookie fail,use env PLUGIN_API_DEBUG_USERNAME[%v] as username", username)
 		} else {
 			username = bkUid.Value
 		}
@@ -60,36 +66,38 @@ func (p *PluginApiController) Prepare() {
 		bkToken, err := p.Ctx.Request.Cookie(tokenKey)
 		if err != nil {
 			token = ""
-			logger.Infof("[Plugin Api Debug] Get %v from cookie fail,plase check env UserTokenKeyName", tokenKey)
+			pluginApiLogger.Infof("Get %v from cookie fail,plase check env UserTokenKeyName", tokenKey)
 		} else {
 			token = bkToken.Value
 		}
 	} else {
 		bkToken, ok := p.Ctx.Request.Header["X-Bkapi-Jwt"]
 		if !ok {
-			logger.Errorf("[Plugin Api Product] This API can only be accessed through API gateway")
+			pluginApiLogger.Errorf("This API can only be accessed through API gateway")
 			p.Data["json"] = &PluginApiBaseResponse{
 				Result:  false,
 				Message: "This API can only be accessed through API gateway",
 			}
 			p.ServeJSON()
+			return
 		} else {
 			token = bkToken[0]
 		}
 
 		claims, err := parseApigwJWT(p.Ctx.Request)
 		if err != nil {
-			logger.Errorf("[Plugin Api Product] This API can only be accessed through API gateway")
+			pluginApiLogger.Errorf("This API can only be accessed through API gateway")
 			p.Data["json"] = &PluginApiBaseResponse{
 				Result:  false,
 				Message: "This API can only be accessed through API gateway",
 			}
 			p.ServeJSON()
+			return
 		} else {
 			username = claims.User.Username
 		}
 	}
-	p.SetUser(username, token)
+	p.setUser(username, token)
 }
 
 func (p *PluginApiController) GetBkapiAuthorizationInfo() string {

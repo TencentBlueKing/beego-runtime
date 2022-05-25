@@ -230,8 +230,8 @@ func init() {
 	initApigwEndpoint()
 	initApigwApiName()
 	initApigwBackendHost()
-	setupLog()
-
 	initUserTokenKeyName()
 	initPluginApiDebugUsername()
+	setupLog()
+
 }

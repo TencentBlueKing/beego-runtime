@@ -6,6 +6,7 @@ import (
 
 	"github.com/beego/beego/v2/server/web"
 	"github.com/homholueng/beego-runtime/conf"
+	"github.com/homholueng/beego-runtime/routers"
 	runtimeUtils "github.com/homholueng/beego-runtime/utils"
 )
 
@@ -36,5 +37,6 @@ func runServer() {
 	web.BConfig.CopyRequestBody = true
 	web.BConfig.WebConfig.ViewsPath = viewPath
 	web.SetStaticPath("/static", staticDir)
+	web.AddNamespace(routers.PluginApiNamespace)
 	web.Run(fmt.Sprintf(":%v", conf.Port()))
 }
