@@ -7,6 +7,8 @@ import (
 	beego "github.com/beego/beego/v2/server/web"
 )
 
+var PluginApiNamespace = beego.NewNamespace("/bk_plugin/plugin_api/")
+
 func init() {
 	beego.Router("/bk_plugin/meta", &controllers.MetaController{})
 	beego.Router("/bk_plugin/detail/:version", &controllers.DetailController{})
