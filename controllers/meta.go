@@ -1,11 +1,11 @@
 package controllers
 
 import (
+	"github.com/TencentBlueKing/beego-runtime/conf"
+	runtimeInfo "github.com/TencentBlueKing/beego-runtime/info"
+	"github.com/TencentBlueKing/bk-plugin-framework-go/hub"
+	frameworkInfo "github.com/TencentBlueKing/bk-plugin-framework-go/info"
 	web "github.com/beego/beego/v2/server/web"
-	"github.com/homholueng/beego-runtime/conf"
-	runtimeInfo "github.com/homholueng/beego-runtime/info"
-	"github.com/homholueng/bk-plugin-framework-go/hub"
-	frameworkInfo "github.com/homholueng/bk-plugin-framework-go/info"
 )
 
 type MetaController struct {

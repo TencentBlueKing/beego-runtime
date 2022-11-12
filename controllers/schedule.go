@@ -4,9 +4,9 @@ import (
 	"encoding/json"
 	"fmt"
 
+	"github.com/TencentBlueKing/beego-runtime/conf"
+	"github.com/TencentBlueKing/beego-runtime/runtime"
 	"github.com/beego/beego/v2/server/web"
-	"github.com/homholueng/beego-runtime/conf"
-	"github.com/homholueng/beego-runtime/runtime"
 )
 
 const timeFormat = "2006-01-02 15:04:05"

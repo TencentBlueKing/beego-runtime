@@ -5,13 +5,13 @@ import (
 	"fmt"
 	"strings"
 
+	"github.com/TencentBlueKing/beego-runtime/conf"
+	"github.com/TencentBlueKing/beego-runtime/runtime"
+	"github.com/TencentBlueKing/beego-runtime/worker"
+	"github.com/TencentBlueKing/bk-plugin-framework-go/constants"
+	"github.com/TencentBlueKing/bk-plugin-framework-go/executor"
 	web "github.com/beego/beego/v2/server/web"
 	"github.com/google/uuid"
-	"github.com/homholueng/beego-runtime/conf"
-	"github.com/homholueng/beego-runtime/runtime"
-	"github.com/homholueng/beego-runtime/worker"
-	"github.com/homholueng/bk-plugin-framework-go/constants"
-	"github.com/homholueng/bk-plugin-framework-go/executor"
 	log "github.com/sirupsen/logrus"
 )
 

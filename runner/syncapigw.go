@@ -5,10 +5,10 @@ import (
 	"log"
 	"time"
 
+	"github.com/TencentBlueKing/beego-runtime/conf"
+	"github.com/TencentBlueKing/beego-runtime/utils"
 	"github.com/TencentBlueKing/bk-apigateway-sdks/core/bkapi"
 	"github.com/TencentBlueKing/bk-apigateway-sdks/manager"
-	"github.com/homholueng/beego-runtime/conf"
-	"github.com/homholueng/beego-runtime/utils"
 	"github.com/sirupsen/logrus"
 )
 

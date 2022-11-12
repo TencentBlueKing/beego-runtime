@@ -3,8 +3,8 @@ package worker
 import (
 	"log"
 
+	"github.com/TencentBlueKing/beego-runtime/conf"
 	"github.com/hibiken/asynq"
-	"github.com/homholueng/beego-runtime/conf"
 )
 
 func Run() error {

@@ -1,8 +1,8 @@
 package routers
 
 import (
-	"github.com/homholueng/beego-runtime/conf"
-	"github.com/homholueng/beego-runtime/controllers"
+	"github.com/TencentBlueKing/beego-runtime/conf"
+	"github.com/TencentBlueKing/beego-runtime/controllers"
 
 	beego "github.com/beego/beego/v2/server/web"
 )

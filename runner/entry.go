@@ -5,8 +5,8 @@ import (
 	"log"
 	"os"
 
+	_ "github.com/TencentBlueKing/beego-runtime/routers"
 	"github.com/beego/bee/v2/cmd"
-	_ "github.com/homholueng/beego-runtime/routers"
 )
 
 func Run() {

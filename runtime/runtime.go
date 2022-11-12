@@ -4,8 +4,8 @@ import (
 	"encoding/json"
 	"time"
 
-	"github.com/homholueng/bk-plugin-framework-go/constants"
-	"github.com/homholueng/bk-plugin-framework-go/runtime"
+	"github.com/TencentBlueKing/bk-plugin-framework-go/constants"
+	"github.com/TencentBlueKing/bk-plugin-framework-go/runtime"
 )
 
 type Poller interface {

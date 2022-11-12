@@ -4,7 +4,7 @@ import (
 	"log"
 	"os/exec"
 
-	"github.com/homholueng/beego-runtime/utils"
+	"github.com/TencentBlueKing/beego-runtime/utils"
 )
 
 func runCollectstatics() {

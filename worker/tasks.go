@@ -7,10 +7,10 @@ import (
 
 	log "github.com/sirupsen/logrus"
 
+	"github.com/TencentBlueKing/beego-runtime/conf"
+	"github.com/TencentBlueKing/beego-runtime/runtime"
+	"github.com/TencentBlueKing/bk-plugin-framework-go/executor"
 	"github.com/hibiken/asynq"
-	"github.com/homholueng/beego-runtime/conf"
-	"github.com/homholueng/beego-runtime/runtime"
-	"github.com/homholueng/bk-plugin-framework-go/executor"
 )
 
 const TypePoll = "poll"
