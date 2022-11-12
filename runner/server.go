@@ -4,10 +4,10 @@ import (
 	"fmt"
 	"log"
 
+	"github.com/TencentBlueKing/beego-runtime/conf"
+	"github.com/TencentBlueKing/beego-runtime/routers"
+	runtimeUtils "github.com/TencentBlueKing/beego-runtime/utils"
 	"github.com/beego/beego/v2/server/web"
-	"github.com/homholueng/beego-runtime/conf"
-	"github.com/homholueng/beego-runtime/routers"
-	runtimeUtils "github.com/homholueng/beego-runtime/utils"
 )
 
 func runServer() {

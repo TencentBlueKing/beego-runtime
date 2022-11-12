@@ -15,9 +15,9 @@ import (
 	"net/http"
 	"strings"
 
+	"github.com/TencentBlueKing/beego-runtime/conf"
 	beego "github.com/beego/beego/v2/server/web"
 	"github.com/google/uuid"
-	"github.com/homholueng/beego-runtime/conf"
 
 	"encoding/json"
 

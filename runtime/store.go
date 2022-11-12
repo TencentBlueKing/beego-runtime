@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"time"
 
-	"github.com/homholueng/bk-plugin-framework-go/constants"
+	"github.com/TencentBlueKing/bk-plugin-framework-go/constants"
 )
 
 type SimpleObjectStore struct {

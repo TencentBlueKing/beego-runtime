@@ -3,7 +3,7 @@ package runner
 import (
 	"log"
 
-	"github.com/homholueng/beego-runtime/worker"
+	"github.com/TencentBlueKing/beego-runtime/worker"
 )
 
 func runWorker() {

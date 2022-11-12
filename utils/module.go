@@ -4,12 +4,12 @@ import (
 	"os"
 	"path"
 
-	"github.com/homholueng/beego-runtime/info"
+	"github.com/TencentBlueKing/beego-runtime/info"
 	"golang.org/x/mod/module"
 )
 
 func GetApigwDefinitionPath() (string, error) {
-	baseDir, err := GetModulePath("github.com/homholueng/beego-runtime", info.Version())
+	baseDir, err := GetModulePath("github.com/TencentBlueKing/beego-runtime", info.Version())
 	if err != nil {
 		return "", err
 	}
@@ -18,7 +18,7 @@ func GetApigwDefinitionPath() (string, error) {
 }
 
 func GetApigwResourcesPath() (string, error) {
-	baseDir, err := GetModulePath("github.com/homholueng/beego-runtime", info.Version())
+	baseDir, err := GetModulePath("github.com/TencentBlueKing/beego-runtime", info.Version())
 	if err != nil {
 		return "", err
 	}
@@ -27,7 +27,7 @@ func GetApigwResourcesPath() (string, error) {
 }
 
 func GetStaticDirPath() (string, error) {
-	baseDir, err := GetModulePath("github.com/homholueng/beego-runtime", info.Version())
+	baseDir, err := GetModulePath("github.com/TencentBlueKing/beego-runtime", info.Version())
 	if err != nil {
 		return "", err
 	}
@@ -36,7 +36,7 @@ func GetStaticDirPath() (string, error) {
 }
 
 func GetViewPath() (string, error) {
-	baseDir, err := GetModulePath("github.com/homholueng/beego-runtime", info.Version())
+	baseDir, err := GetModulePath("github.com/TencentBlueKing/beego-runtime", info.Version())
 	if err != nil {
 		return "", err
 	}

@@ -3,8 +3,8 @@ package controllers
 import (
 	"fmt"
 
+	"github.com/TencentBlueKing/bk-plugin-framework-go/hub"
 	web "github.com/beego/beego/v2/server/web"
-	"github.com/homholueng/bk-plugin-framework-go/hub"
 )
 
 type DetailController struct {

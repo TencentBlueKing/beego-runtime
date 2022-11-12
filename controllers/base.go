@@ -4,9 +4,9 @@ import (
 	"net/http"
 	"time"
 
+	"github.com/TencentBlueKing/beego-runtime/conf"
 	"github.com/TencentBlueKing/bk-apigateway-sdks/core/bkapi"
 	"github.com/TencentBlueKing/bk-apigateway-sdks/manager"
-	"github.com/homholueng/beego-runtime/conf"
 	"github.com/pkg/errors"
 )
 

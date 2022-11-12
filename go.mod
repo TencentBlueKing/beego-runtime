@@ -1,4 +1,4 @@
-module github.com/homholueng/beego-runtime
+module github.com/TencentBlueKing/beego-runtime
 
 go 1.17
 
@@ -7,11 +7,11 @@ require github.com/beego/beego/v2 v2.0.2
 require github.com/TencentBlueKing/bk-apigateway-sdks v0.1.7
 
 require (
+	github.com/TencentBlueKing/bk-plugin-framework-go v0.4.0
 	github.com/beego/bee/v2 v2.0.2
 	github.com/go-redis/redis/v8 v8.11.4
 	github.com/google/uuid v1.2.0
 	github.com/hibiken/asynq v0.22.1
-	github.com/homholueng/bk-plugin-framework-go v0.2.4
 	github.com/pkg/errors v0.9.1
 	github.com/sirupsen/logrus v1.8.1
 	golang.org/x/mod v0.4.2
