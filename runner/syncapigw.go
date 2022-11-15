@@ -26,7 +26,6 @@ func runSyncApigw() {
 
 	// create manager
 	config := bkapi.ClientConfig{
-		Endpoint:  conf.ApigwEndpoint(),
 		AppCode:   conf.PluginName(),
 		AppSecret: conf.PluginSecret(),
 	}
@@ -36,6 +35,8 @@ func runSyncApigw() {
 		config,
 		definitionPath,
 		map[string]interface{}{
+			"BK_APIGW_MANAGER_MAINTAINERS":     conf.ApigwManagerMaintainers(),
+			"BK_PLUGIN_APIGW_NAME":             conf.ApigwApiName(),
 			"BK_PLUGIN_APIGW_STAGE_NAME":       conf.Environment(),
 			"BK_PLUGIN_APIGW_BACKEND_HOST":     conf.ApigwBackendHost(),
 			"BK_PLUGIN_APIGW_RESOURCE_VERSION": fmt.Sprintf("1.0.0+%v", time.Now().Unix()),
@@ -44,6 +45,13 @@ func runSyncApigw() {
 	)
 	if err != nil {
 		log.Fatalf("create apigw  manager error :%v\n", err)
+	}
+
+	// create gateway
+	syncBaseInfoRes, err := manager.SyncBasicInfo("apigateway")
+	logger.Printf("sync apigw baseinfo return: %v\n", syncBaseInfoRes)
+	if err != nil {
+		log.Fatalf("sync apigw baseinfo error :%v\n", err)
 	}
 
 	// sync start
