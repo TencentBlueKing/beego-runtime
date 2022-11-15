@@ -1,3 +1,11 @@
+apigateway:
+  description: {{ data.BK_PLUGIN_APIGW_NAME }} apigw
+  is_public: true
+  maintainers:
+    {% for member in data.BK_APIGW_MANAGER_MAINTAINERS %}
+    - {{ member }}
+    {% endfor %}
+
 stage:
   name: {{ data.BK_PLUGIN_APIGW_STAGE_NAME }}
   vars: {}

@@ -29,6 +29,7 @@ worker_concurrency = ${SCHEDULE_WORKER_CONCURRENCY}
 
 apigw_api_name = ${BKPAAS_BK_PLUGIN_APIGW_NAME}
 apigw_endpoint = ${BK_APIGW_MANAGER_URL_TEMPL}
+apigw_manager_maintainers = ${BK_APIGW_MANAGER_MAINTAINERS}
 
 user_token_key_name = ${USER_TOKEN_KEY_NAME}
 plugin_api_debug_username = ${PLUGIN_API_DEBUG_USERNAME}
@@ -52,6 +53,7 @@ var workerConcurrency int
 
 var apigwEndpoint string
 var apigwApiName string
+var apigwManagerMaintainers string
 
 var userTokenKeyName string
 var pluginApiDebugUsername string
@@ -185,6 +187,15 @@ func initApigwApiName() {
 func ApigwApiName() string {
 	return apigwApiName
 }
+
+func initApigwManagerMaintainers() {
+	apigwManagerMaintainers = Settings.DefaultString("apigw_manager_maintainers", "admin")
+
+}
+func ApigwManagerMaintainers() []string {
+	return strings.Split(apigwManagerMaintainers, ",")
+}
+
 func initUserTokenKeyName() {
 	var tokenDefaultKey string
 	if IsDevMode() {
@@ -229,6 +240,7 @@ func init() {
 	initWorkerConcurrency()
 	initApigwEndpoint()
 	initApigwApiName()
+	initApigwManagerMaintainers()
 	initApigwBackendHost()
 	initUserTokenKeyName()
 	initPluginApiDebugUsername()
