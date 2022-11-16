@@ -41,18 +41,21 @@ func (c *InvokeController) Post() {
 	traceLogger := log.WithField("trace_id", traceID)
 	traceLogger.Info("request headers:", c.Ctx.Request.Header)
 
-	_, err := parseApigwJWT(c.Ctx.Request)
-	if err != nil {
-		c.Data["json"] = &InvokePostResponse{
-			BaseResponse: &BaseResponse{
-				Result:  false,
-				Message: fmt.Sprintf("please make sure request is from apigw, %v", err),
-			},
-			TraceID: traceID,
-			Data:    &InvokePostData{},
+	// 只有非DEV环境才会去进行网关认证，方便本地调试
+	if !conf.IsDevMode() {
+		_, err := parseApigwJWT(c.Ctx.Request)
+		if err != nil {
+			c.Data["json"] = &InvokePostResponse{
+				BaseResponse: &BaseResponse{
+					Result:  false,
+					Message: fmt.Sprintf("please make sure request is from apigw, %v", err),
+				},
+				TraceID: traceID,
+				Data:    &InvokePostData{},
+			}
+			c.ServeJSON()
+			return
 		}
-		c.ServeJSON()
-		return
 	}
 
 	version := c.Ctx.Input.Param(":version")
