@@ -6,7 +6,7 @@ import (
 
 var ormClient orm.Ormer
 
-func initOrm() orm.Ormer {
+func GetOrmClient() orm.Ormer {
 	if ormClient != nil {
 		return ormClient
 	}
@@ -19,7 +19,7 @@ type MysqlScheduleStore struct {
 
 func (rss *MysqlScheduleStore) Set(s *Schedule) error {
 
-	o := initOrm()
+	o := GetOrmClient()
 	schedule := Schedule{TraceID: s.TraceID}
 	err := o.Read(&schedule)
 	if err == nil {
@@ -44,7 +44,7 @@ func (rss *MysqlScheduleStore) Set(s *Schedule) error {
 }
 
 func (rss *MysqlScheduleStore) Get(traceID string) (*Schedule, error) {
-	o := initOrm()
+	o := GetOrmClient()
 	schedule := Schedule{TraceID: traceID}
 	err := o.Read(&schedule)
 	if err != nil {
