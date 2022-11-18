@@ -33,6 +33,12 @@ apigw_manager_maintainers = ${BK_APIGW_MANAGER_MAINTAINERS}
 
 user_token_key_name = ${USER_TOKEN_KEY_NAME}
 plugin_api_debug_username = ${PLUGIN_API_DEBUG_USERNAME}
+
+gcs_mysql_name = ${GCS_MYSQL_NAME}
+gcs_mysql_user = ${GCS_MYSQL_USER}
+gcs_mysql_password = ${GCS_MYSQL_PASSWORD}
+gcs_mysql_host = ${GCS_MYSQL_HOST}
+gcs_mysql_port = ${GCS_MYSQL_PORT}
 `
 
 var Settings config.Configer
@@ -50,6 +56,8 @@ var redisClient *redis.Client
 var scheduleExpiration time.Duration
 var finishedScheduleExpiration time.Duration
 var workerConcurrency int
+
+var mysqlConStr string
 
 var apigwEndpoint string
 var apigwApiName string
@@ -220,6 +228,33 @@ func PluginApiDebugUsername() string {
 	return pluginApiDebugUsername
 }
 
+func initMysqlConAddr() {
+	//gcs_mysql_name = ${GCS_MYSQL_NAME}
+	//gcs_mysql_user = ${GCS_MYSQL_USER}
+	//gcs_mysql_password = ${GCS_MYSQL_PASSWORD}
+	//gcs_mysql_host = ${GCS_MYSQL_HOST}
+	//gcs_mysql_port = ${GCS_MYSQL_PORT}
+
+	mysqlName := Settings.DefaultString("gcs_mysql_name", "'")
+	mysqlUsername := Settings.DefaultString("gcs_mysql_user", "root")
+	mysqlPassword := Settings.DefaultString("gcs_mysql_password", "root")
+	mysqlHost := Settings.DefaultString("gcs_mysql_host", "127.0.0.1")
+	mysqlPort := Settings.DefaultInt("gcs_mysql_port", 3306)
+
+	mysqlConStr = fmt.Sprintf(
+		"%v:%v@tcp(%v:%v)/%v?charset=utf8",
+		mysqlUsername,
+		mysqlPassword,
+		mysqlHost,
+		mysqlPort,
+		mysqlName,
+	)
+}
+
+func MysqlConAddr() string {
+	return mysqlConStr
+}
+
 func init() {
 	var err error
 	Settings, err = config.NewConfigData("ini", []byte(configData))
@@ -227,7 +262,7 @@ func init() {
 		fmt.Printf("runtime config load error: %v\n", err)
 		os.Exit(2)
 	}
-
+	initMysqlConAddr()
 	initPluginName()
 	initPluginSecret()
 	initEnvironment()

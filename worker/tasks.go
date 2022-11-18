@@ -35,11 +35,7 @@ func HandlePollTask(ctx context.Context, t *asynq.Task) error {
 	traceLogger := log.WithField("trace_id", p.TraceID)
 	traceLogger.Info("prepare schedule")
 
-	rss := runtime.RedisScheduleStore{
-		Client:             conf.RedisClient(),
-		Expiration:         conf.ScheduleExpiration(),
-		FinishedExpiration: conf.FinishedScheduleExpiration(),
-	}
+	rss := runtime.MysqlScheduleStore{}
 
 	schedule, err := rss.Get(p.TraceID)
 	if err != nil {
@@ -48,9 +44,10 @@ func HandlePollTask(ctx context.Context, t *asynq.Task) error {
 	}
 
 	reader := runtime.JSONContextReader{
-		Inputs:        schedule.Inputs,
-		ContextInputs: schedule.ContextInputs,
+		Inputs:        []byte(schedule.Inputs),
+		ContextInputs: []byte(schedule.ContextInputs),
 	}
+
 	runtime := runtime.NewScheduleExecuteRuntime(schedule, &rss, &AsynqPoller{Client: conf.AsynqClient()})
 
 	err = executor.Schedule(

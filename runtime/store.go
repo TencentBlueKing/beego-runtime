@@ -2,6 +2,7 @@ package runtime
 
 import (
 	"encoding/json"
+	"github.com/beego/beego/v2/client/orm"
 	"time"
 
 	"github.com/TencentBlueKing/bk-plugin-framework-go/constants"
@@ -36,20 +37,23 @@ func (s *JSONObjectStore) Read(traceID string, v interface{}) error {
 }
 
 type Schedule struct {
-	TraceID       string
+	TraceID       string `orm:"PK"`
 	PluginVersion string
 	State         constants.State
 	InvokeCount   int
-	Inputs        []byte
-	ContextInputs []byte
-	ContextStore  []byte
-	Outputs       []byte
-	CreateAt      time.Time
+	Inputs        orm.JSONField
+	ContextInputs orm.JSONField
+	ContextStore  orm.JSONField
+	Outputs       orm.JSONField
+	CreateAt      time.Time `orm:"auto_now_add;type(date)"`
 	Finished      bool
-	FinishAt      time.Time
+	FinishAt      time.Time `orm:"null"`
 }
-
 type ScheduleStore interface {
 	Set(s *Schedule) error
 	Get(traceID string) (*Schedule, error)
+}
+
+func init() {
+	orm.RegisterModel(new(Schedule))
 }

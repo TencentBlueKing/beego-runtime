@@ -41,18 +41,20 @@ func (c *InvokeController) Post() {
 	traceLogger := log.WithField("trace_id", traceID)
 	traceLogger.Info("request headers:", c.Ctx.Request.Header)
 
-	_, err := parseApigwJWT(c.Ctx.Request)
-	if err != nil {
-		c.Data["json"] = &InvokePostResponse{
-			BaseResponse: &BaseResponse{
-				Result:  false,
-				Message: fmt.Sprintf("please make sure request is from apigw, %v", err),
-			},
-			TraceID: traceID,
-			Data:    &InvokePostData{},
+	if !conf.IsDevMode() {
+		_, err := parseApigwJWT(c.Ctx.Request)
+		if err != nil {
+			c.Data["json"] = &InvokePostResponse{
+				BaseResponse: &BaseResponse{
+					Result:  false,
+					Message: fmt.Sprintf("please make sure request is from apigw, %v", err),
+				},
+				TraceID: traceID,
+				Data:    &InvokePostData{},
+			}
+			c.ServeJSON()
+			return
 		}
-		c.ServeJSON()
-		return
 	}
 
 	version := c.Ctx.Input.Param(":version")
@@ -85,11 +87,7 @@ func (c *InvokeController) Post() {
 			ContextInputs: param.Context,
 			OutputsStore:  &outputStore,
 			ContextStore:  &contextStore,
-			ScheduleStore: &runtime.RedisScheduleStore{
-				Client:             conf.RedisClient(),
-				Expiration:         conf.ScheduleExpiration(),
-				FinishedExpiration: conf.FinishedScheduleExpiration(),
-			},
+			ScheduleStore: &runtime.MysqlScheduleStore{},
 			Poller: &worker.AsynqPoller{
 				Client: conf.AsynqClient(),
 			},

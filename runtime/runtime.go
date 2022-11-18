@@ -2,6 +2,7 @@ package runtime
 
 import (
 	"encoding/json"
+	"github.com/beego/beego/v2/client/orm"
 	"time"
 
 	"github.com/TencentBlueKing/bk-plugin-framework-go/constants"
@@ -30,6 +31,7 @@ func (r *ExecuteRuntime) GetContextStore() runtime.ObjectStore {
 }
 
 func (r *ExecuteRuntime) SetPoll(traceID string, version string, invokeCount int, after time.Duration) error {
+
 	storeData, err := json.Marshal(r.ContextStore.Data)
 	if err != nil {
 		return err
@@ -45,10 +47,10 @@ func (r *ExecuteRuntime) SetPoll(traceID string, version string, invokeCount int
 		PluginVersion: version,
 		State:         constants.StatePoll,
 		InvokeCount:   invokeCount,
-		Inputs:        r.Inputs,
-		ContextInputs: r.ContextInputs,
-		ContextStore:  storeData,
-		Outputs:       outputsData,
+		Inputs:        orm.JSONField(r.Inputs),
+		ContextInputs: orm.JSONField(r.ContextInputs),
+		ContextStore:  orm.JSONField(storeData),
+		Outputs:       orm.JSONField(outputsData),
 		CreateAt:      time.Now(),
 		Finished:      false,
 	}); err != nil {
@@ -71,7 +73,9 @@ type ScheduleExecuteRuntime struct {
 }
 
 func (r *ScheduleExecuteRuntime) updateSchedule(state constants.State, invokeCount int, finished bool) error {
+
 	storeData, err := json.Marshal(r.ContextStore.Data)
+
 	if err != nil {
 		return err
 	}
@@ -81,8 +85,8 @@ func (r *ScheduleExecuteRuntime) updateSchedule(state constants.State, invokeCou
 		return err
 	}
 
-	r.Schedule.ContextStore = storeData
-	r.Schedule.Outputs = outputsData
+	r.Schedule.ContextStore = orm.JSONField(storeData)
+	r.Schedule.Outputs = orm.JSONField(outputsData)
 	r.Schedule.State = state
 	r.Schedule.InvokeCount = invokeCount
 	if finished {
@@ -96,8 +100,8 @@ func (r *ScheduleExecuteRuntime) updateSchedule(state constants.State, invokeCou
 func NewScheduleExecuteRuntime(schedule *Schedule, scheduleStore ScheduleStore, poller Poller) *ScheduleExecuteRuntime {
 	return &ScheduleExecuteRuntime{
 		Schedule:      schedule,
-		ContextStore:  &JSONObjectStore{JSON: schedule.ContextStore},
-		OutputsStore:  &JSONObjectStore{JSON: schedule.Outputs},
+		ContextStore:  &JSONObjectStore{JSON: []byte(schedule.ContextStore)},
+		OutputsStore:  &JSONObjectStore{JSON: []byte(schedule.Outputs)},
 		ScheduleStore: scheduleStore,
 		Poller:        poller,
 	}
