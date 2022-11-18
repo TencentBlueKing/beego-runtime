@@ -1,13 +1,12 @@
 package runner
 
 import (
-	"log"
-
 	"github.com/TencentBlueKing/beego-runtime/worker"
+	"log"
 )
 
 func runWorker() {
-	err := worker.Run()
+	err := worker.MachineryWorkerRun()
 	if err != nil {
 		log.Fatalf("start worker error: %v\n", err)
 	}

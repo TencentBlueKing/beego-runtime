@@ -87,10 +87,8 @@ func (c *InvokeController) Post() {
 			ContextInputs: param.Context,
 			OutputsStore:  &outputStore,
 			ContextStore:  &contextStore,
-			ScheduleStore: &runtime.MysqlScheduleStore{},
-			Poller: &worker.AsynqPoller{
-				Client: conf.AsynqClient(),
-			},
+			ScheduleStore: runtime.GetScheduleStore(),
+			Poller:        &worker.MachineryPoller{},
 		},
 		traceLogger,
 	)

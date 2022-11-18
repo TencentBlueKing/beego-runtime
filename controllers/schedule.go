@@ -30,7 +30,7 @@ type ScheduleGetResponse struct {
 
 func (c *ScheduleController) Get() {
 	traceID := c.Ctx.Input.Param(":trace_id")
-	store := runtime.MysqlScheduleStore{}
+	store := runtime.GetScheduleStore()
 	schedule, err := store.Get(traceID)
 	if err != nil {
 		c.Data["json"] = &ScheduleGetResponse{

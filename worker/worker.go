@@ -1,29 +1,52 @@
 package worker
 
 import (
-	"log"
-
+	"fmt"
+	"github.com/RichardKnop/machinery/v2/example/tracers"
+	"github.com/RichardKnop/machinery/v2/tasks"
 	"github.com/TencentBlueKing/beego-runtime/conf"
-	"github.com/hibiken/asynq"
+	"github.com/google/uuid"
+	log "github.com/sirupsen/logrus"
+	"strings"
 )
 
-func Run() error {
-	srv := asynq.NewServer(
-		asynq.RedisClientOpt{
-			Addr:     conf.RedisAddr(),
-			Password: conf.RedisPassword(),
-			DB:       0,
-		},
-		asynq.Config{Concurrency: conf.WorkerConcurrency()},
-	)
+func MachineryWorkerRun() error {
+	// worker 需要生成随机的id用于多worker标示身份
+	workerTag := strings.Replace(uuid.NewString(), "-", "", -1)[:5]
 
-	// mux maps a type to a handler
-	mux := asynq.NewServeMux()
-	mux.HandleFunc(TypePoll, HandlePollTask)
+	consumerTag := fmt.Sprintf("worker-%s", workerTag)
 
-	if err := srv.Run(mux); err != nil {
-		log.Fatalf("could not run server: %v", err)
+	cleanup, err := tracers.SetupTracer(consumerTag)
+	if err != nil {
 		return err
 	}
-	return nil
+	defer cleanup()
+
+	server, err := StartServer()
+	if err != nil {
+		return err
+	}
+
+	// The second argument is a consumer tag
+	// Ideally, each worker should have a unique tag (worker1, worker2 etc)
+	worker := server.NewWorker(consumerTag, conf.WorkerConcurrency())
+
+	errorHandler := func(err error) {
+		log.Fatalf("it has some err of task")
+	}
+
+	preTaskHandler := func(signature *tasks.Signature) {
+		log.Infof("Received task , name: %s", signature.Name)
+	}
+
+	postTaskHandler := func(signature *tasks.Signature) {
+		log.Infof("I am an end of task handler for: %s", signature.Name)
+	}
+
+	worker.SetPostTaskHandler(postTaskHandler)
+	worker.SetErrorHandler(errorHandler)
+	worker.SetPreTaskHandler(preTaskHandler)
+
+	return worker.Launch()
+
 }

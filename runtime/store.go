@@ -2,6 +2,7 @@ package runtime
 
 import (
 	"encoding/json"
+	"github.com/TencentBlueKing/beego-runtime/conf"
 	"github.com/beego/beego/v2/client/orm"
 	"time"
 
@@ -52,6 +53,17 @@ type Schedule struct {
 type ScheduleStore interface {
 	Set(s *Schedule) error
 	Get(traceID string) (*Schedule, error)
+}
+
+func GetScheduleStore() ScheduleStore {
+	if conf.ScheduleStoreMode() == "redis" {
+		return &RedisScheduleStore{
+			Client:             conf.RedisClient(),
+			Expiration:         conf.ScheduleExpiration(),
+			FinishedExpiration: conf.FinishedScheduleExpiration()}
+	} else {
+		return &MysqlScheduleStore{}
+	}
 }
 
 func init() {

@@ -1,43 +1,38 @@
 package worker
 
 import (
-	"context"
-	"encoding/json"
-	"fmt"
-
+	"github.com/RichardKnop/machinery/v2/tasks"
 	log "github.com/sirupsen/logrus"
+	"time"
 
-	"github.com/TencentBlueKing/beego-runtime/conf"
 	"github.com/TencentBlueKing/beego-runtime/runtime"
 	"github.com/TencentBlueKing/bk-plugin-framework-go/executor"
-	"github.com/hibiken/asynq"
 )
 
-const TypePoll = "poll"
+func NewPollTask(traceID string, after time.Duration) *tasks.Signature {
+	eta := time.Now().UTC().Add(time.Second * after)
 
-type PollPayload struct {
-	TraceID string
+	Task := tasks.Signature{
+		Name: "HandlePollTask",
+		Args: []tasks.Arg{
+			{
+				Type:  "string",
+				Value: traceID,
+			},
+		},
+		ETA: &eta,
+	}
+
+	return &Task
 }
 
-func NewPollTask(traceID string) (*asynq.Task, error) {
-	payload, err := json.Marshal(PollPayload{TraceID: traceID})
-	if err != nil {
-		return nil, err
-	}
-	return asynq.NewTask(TypePoll, payload), nil
-}
-
-func HandlePollTask(ctx context.Context, t *asynq.Task) error {
-	var p PollPayload
-	if err := json.Unmarshal(t.Payload(), &p); err != nil {
-		return fmt.Errorf("json.Unmarshal failed: %v: %w", err, asynq.SkipRetry)
-	}
-	traceLogger := log.WithField("trace_id", p.TraceID)
+func HandlePollTask(traceID string) error {
+	traceLogger := log.WithField("trace_id", traceID)
 	traceLogger.Info("prepare schedule")
 
-	rss := runtime.MysqlScheduleStore{}
+	rss := runtime.GetScheduleStore()
 
-	schedule, err := rss.Get(p.TraceID)
+	schedule, err := rss.Get(traceID)
 	if err != nil {
 		traceLogger.Errorf("schedule get error: %v\n", err)
 		return err
@@ -48,10 +43,10 @@ func HandlePollTask(ctx context.Context, t *asynq.Task) error {
 		ContextInputs: []byte(schedule.ContextInputs),
 	}
 
-	runtime := runtime.NewScheduleExecuteRuntime(schedule, &rss, &AsynqPoller{Client: conf.AsynqClient()})
+	runtime := runtime.NewScheduleExecuteRuntime(schedule, rss, &MachineryPoller{})
 
 	err = executor.Schedule(
-		p.TraceID,
+		traceID,
 		schedule.PluginVersion,
 		schedule.InvokeCount+1,
 		&reader,

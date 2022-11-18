@@ -1,22 +1,26 @@
 package worker
 
 import (
-	"log"
+	"context"
+	"github.com/opentracing/opentracing-go"
 	"time"
-
-	"github.com/hibiken/asynq"
 )
 
-type AsynqPoller struct {
-	Client *asynq.Client
+type MachineryPoller struct {
 }
 
-func (p *AsynqPoller) Poll(traceID string, after time.Duration) error {
-	task, err := NewPollTask(traceID)
+func (p *MachineryPoller) Poll(traceID string, after time.Duration) error {
+	task := NewPollTask(traceID, after)
+
+	server, err := StartServer()
 	if err != nil {
 		return err
 	}
-	info, err := p.Client.Enqueue(task, asynq.ProcessIn(after))
-	log.Printf("poll %s info: %v", traceID, info)
-	return err
+
+	span, ctx := opentracing.StartSpanFromContext(context.Background(), "send")
+	defer span.Finish()
+
+	server.SendTaskWithContext(ctx, task)
+
+	return nil
 }

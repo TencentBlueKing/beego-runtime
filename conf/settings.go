@@ -2,13 +2,12 @@ package conf
 
 import (
 	"fmt"
+	machineryConfig "github.com/RichardKnop/machinery/v2/config"
+	config "github.com/beego/beego/v2/core/config"
+	"github.com/go-redis/redis/v8"
 	"os"
 	"strings"
 	"time"
-
-	"github.com/beego/beego/v2/core/config"
-	"github.com/go-redis/redis/v8"
-	"github.com/hibiken/asynq"
 )
 
 const configData string = `
@@ -39,6 +38,15 @@ gcs_mysql_user = ${GCS_MYSQL_USER}
 gcs_mysql_password = ${GCS_MYSQL_PASSWORD}
 gcs_mysql_host = ${GCS_MYSQL_HOST}
 gcs_mysql_port = ${GCS_MYSQL_PORT}
+
+rabbitmq_vhost = ${RABBITMQ_VHOST}
+rabbitmq_port = ${RABBITMQ_PORT}
+rabbitmq_host = ${RABBITMQ_HOST}
+rabbitmq_user = ${RABBITMQ_USER}
+rabbitmq_password = ${RABBITMQ_PASSWORD}
+
+
+store_backend = ${STORE_BACKEND}
 `
 
 var Settings config.Configer
@@ -51,7 +59,6 @@ var apigwBackendHost string
 
 var redisAddr string
 var redisPassword string
-var asynqClient *asynq.Client
 var redisClient *redis.Client
 var scheduleExpiration time.Duration
 var finishedScheduleExpiration time.Duration
@@ -123,16 +130,8 @@ func initRedisAddr() {
 	)
 }
 
-func RedisAddr() string {
-	return redisAddr
-}
-
 func initRedisPassword() {
 	redisPassword = Settings.DefaultString("redis_password", "")
-}
-
-func RedisPassword() string {
-	return redisPassword
 }
 
 func initRedisClient() {
@@ -145,18 +144,6 @@ func initRedisClient() {
 
 func RedisClient() *redis.Client {
 	return redisClient
-}
-
-func initAsynqClient() {
-	asynqClient = asynq.NewClient(asynq.RedisClientOpt{
-		Addr:     redisAddr,
-		Password: redisPassword,
-		DB:       0,
-	})
-}
-
-func AsynqClient() *asynq.Client {
-	return asynqClient
 }
 
 func initScheduleExpiration() {
@@ -228,6 +215,45 @@ func PluginApiDebugUsername() string {
 	return pluginApiDebugUsername
 }
 
+func ScheduleStoreMode() string {
+	return Settings.DefaultString("store_backend", "mysql")
+}
+
+func MachineryCnf() *machineryConfig.Config {
+	//rabbitmq_vhost = ${RABBITMQ_VHOST}
+	//rabbitmq_port = ${RABBITMQ_PORT}
+	//rabbitmq_host = ${RABBITMQ_HOST}
+	//rabbitmq_user = ${RABBITMQ_USER}
+	//rabbitmq_password = ${RABBITMQ_PASSWORD}
+
+	rabbitmqUser := Settings.DefaultString("rabbitmq_user", "guest")
+	rabbitmqPassword := Settings.DefaultString("rabbitmq_password", "guest")
+	rabbitmqVhost := Settings.DefaultString("rabbitmq_vhost", "")
+	rabbitmqPort := Settings.DefaultString("rabbitmq_port", "5672")
+	rabbitmqHost := Settings.DefaultString("rabbitmq_host", "localhost")
+
+	brokerUrl := fmt.Sprintf("amqp://%s:%s@%s:%s/%s",
+		rabbitmqUser,
+		rabbitmqPassword,
+		rabbitmqHost,
+		rabbitmqPort,
+		rabbitmqVhost)
+
+	cnf := &machineryConfig.Config{
+		Broker:          brokerUrl,
+		DefaultQueue:    "schedule",
+		ResultBackend:   brokerUrl,
+		ResultsExpireIn: 3600,
+		AMQP: &machineryConfig.AMQPConfig{
+			Exchange:      "schedule_exchange",
+			ExchangeType:  "direct",
+			BindingKey:    "schedule_task",
+			PrefetchCount: 3,
+		},
+	}
+	return cnf
+}
+
 func initMysqlConAddr() {
 	//gcs_mysql_name = ${GCS_MYSQL_NAME}
 	//gcs_mysql_user = ${GCS_MYSQL_USER}
@@ -270,7 +296,6 @@ func init() {
 	initRedisAddr()
 	initRedisPassword()
 	initRedisClient()
-	initAsynqClient()
 	initScheduleExpiration()
 	initWorkerConcurrency()
 	initApigwEndpoint()
