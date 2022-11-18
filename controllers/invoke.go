@@ -41,6 +41,7 @@ func (c *InvokeController) Post() {
 	traceLogger := log.WithField("trace_id", traceID)
 	traceLogger.Info("request headers:", c.Ctx.Request.Header)
 
+	// 只有非DEV环境才会去进行网关认证，方便本地调试
 	if !conf.IsDevMode() {
 		_, err := parseApigwJWT(c.Ctx.Request)
 		if err != nil {
