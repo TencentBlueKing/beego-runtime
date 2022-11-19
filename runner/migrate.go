@@ -6,7 +6,7 @@ import (
 	"github.com/TencentBlueKing/beego-runtime/utils"
 	"github.com/beego/bee/v2/cmd/commands/migrate"
 	log "github.com/sirupsen/logrus"
-	"path"
+	"path/filepath"
 )
 
 func runMigrate() {
@@ -14,5 +14,5 @@ func runMigrate() {
 	if err != nil {
 		log.Fatalf("get baseDir path failed: %v\n", err)
 	}
-	migrate.MigrateUpdate(baseDir, "mysql", conf.MysqlConAddr(), path.Join(baseDir, "database/migrations"))
+	migrate.MigrateUpdate(baseDir, "mysql", conf.MysqlConAddr(), filepath.Join(baseDir, "database/migrations"))
 }

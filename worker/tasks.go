@@ -34,7 +34,7 @@ func HandlePollTask(traceID string) error {
 
 	schedule, err := rss.Get(traceID)
 	if err != nil {
-		traceLogger.Errorf("schedule get error: %v\n", err)
+		traceLogger.Errorf("schedule get error: %v", err)
 		return err
 	}
 

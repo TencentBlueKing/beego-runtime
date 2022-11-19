@@ -32,7 +32,7 @@ func MachineryWorkerRun() error {
 	worker := server.NewWorker(consumerTag, conf.WorkerConcurrency())
 
 	errorHandler := func(err error) {
-		log.Fatalf("it has some err of task")
+		log.Fatalf("it has some err of task, error:%s", err)
 	}
 
 	preTaskHandler := func(signature *tasks.Signature) {
@@ -40,7 +40,7 @@ func MachineryWorkerRun() error {
 	}
 
 	postTaskHandler := func(signature *tasks.Signature) {
-		log.Infof("I am an end of task handler for: %s", signature.Name)
+		log.Infof("the task is end : %s", signature.Name)
 	}
 
 	worker.SetPostTaskHandler(postTaskHandler)

@@ -22,7 +22,13 @@ func (rss *MysqlScheduleStore) Set(s *Schedule) error {
 	o := GetOrmClient()
 	schedule := Schedule{TraceID: s.TraceID}
 	err := o.Read(&schedule)
-	if err == nil {
+
+	if err != nil {
+		_, err := o.Insert(s)
+		if err != nil {
+			return err
+		}
+	} else {
 		if s.ContextStore == "null" {
 			// 说明有数据，更新数据
 			s.ContextStore = schedule.ContextStore
@@ -30,14 +36,9 @@ func (rss *MysqlScheduleStore) Set(s *Schedule) error {
 		if s.ContextStore == "null" {
 			s.Outputs = schedule.Outputs
 		}
-		_, updateErr := o.Update(s)
-		if updateErr != nil {
-			return updateErr
-		}
-	} else {
-		_, insertErr := o.Insert(s)
-		if insertErr != nil {
-			return insertErr
+		_, err := o.Update(s)
+		if err != nil {
+			return err
 		}
 	}
 	return nil
