@@ -22,7 +22,7 @@ func MachineryWorkerRun() error {
 	}
 	defer cleanup()
 
-	server, err := StartServer()
+	server, err := NewServer()
 	if err != nil {
 		return err
 	}

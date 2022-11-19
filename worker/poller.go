@@ -12,7 +12,7 @@ type MachineryPoller struct {
 func (p *MachineryPoller) Poll(traceID string, after time.Duration) error {
 	task := NewPollTask(traceID, after)
 
-	server, err := StartServer()
+	server, err := NewServer()
 	if err != nil {
 		return err
 	}
