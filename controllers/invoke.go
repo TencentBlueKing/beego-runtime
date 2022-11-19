@@ -88,14 +88,8 @@ func (c *InvokeController) Post() {
 			ContextInputs: param.Context,
 			OutputsStore:  &outputStore,
 			ContextStore:  &contextStore,
-			ScheduleStore: &runtime.RedisScheduleStore{
-				Client:             conf.RedisClient(),
-				Expiration:         conf.ScheduleExpiration(),
-				FinishedExpiration: conf.FinishedScheduleExpiration(),
-			},
-			Poller: &worker.AsynqPoller{
-				Client: conf.AsynqClient(),
-			},
+			ScheduleStore: runtime.GetScheduleStore(),
+			Poller:        &worker.MachineryPoller{},
 		},
 		traceLogger,
 	)

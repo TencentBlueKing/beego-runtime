@@ -4,7 +4,6 @@ import (
 	"encoding/json"
 	"fmt"
 
-	"github.com/TencentBlueKing/beego-runtime/conf"
 	"github.com/TencentBlueKing/beego-runtime/runtime"
 	"github.com/beego/beego/v2/server/web"
 )
@@ -31,11 +30,7 @@ type ScheduleGetResponse struct {
 
 func (c *ScheduleController) Get() {
 	traceID := c.Ctx.Input.Param(":trace_id")
-	store := runtime.RedisScheduleStore{
-		Client:             conf.RedisClient(),
-		Expiration:         conf.ScheduleExpiration(),
-		FinishedExpiration: conf.FinishedScheduleExpiration(),
-	}
+	store := runtime.GetScheduleStore()
 	schedule, err := store.Get(traceID)
 	if err != nil {
 		c.Data["json"] = &ScheduleGetResponse{
@@ -50,7 +45,7 @@ func (c *ScheduleController) Get() {
 	}
 
 	var outputs map[string]interface{}
-	if err := json.Unmarshal(schedule.Outputs, &outputs); err != nil {
+	if err := json.Unmarshal([]byte(schedule.Outputs), &outputs); err != nil {
 		c.Data["json"] = &ScheduleGetResponse{
 			BaseResponse: &BaseResponse{
 				Result:  false,
