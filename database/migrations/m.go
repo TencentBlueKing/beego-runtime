@@ -65,24 +65,7 @@ func checkMigrationsTable() {
 
 func Migrate() {
 	checkMigrationsTable()
-
-	task := "upgrade"
-	switch task {
-	case "upgrade":
-		if err := migration.Upgrade(0); err != nil {
-			os.Exit(2)
-		}
-	case "rollback":
-		if err := migration.Rollback(""); err != nil {
-			os.Exit(2)
-		}
-	case "reset":
-		if err := migration.Reset(); err != nil {
-			os.Exit(2)
-		}
-	case "refresh":
-		if err := migration.Refresh(); err != nil {
-			os.Exit(2)
-		}
+	if err := migration.Upgrade(0); err != nil {
+		os.Exit(2)
 	}
 }
