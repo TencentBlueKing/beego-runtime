@@ -5,20 +5,20 @@ import (
 )
 
 // DO NOT MODIFY
-type Migration_20221118_101625 struct {
+type Schedule_20221118_101625 struct {
 	migration.Migration
 }
 
 // DO NOT MODIFY
 func init() {
-	m := &Migration_20221118_101625{}
+	m := &Schedule_20221118_101625{}
 	m.Created = "20221118_101625"
 
-	migration.Register("Migration_20221118_101625", m)
+	migration.Register("Schedule_20221118_101625", m)
 }
 
 // Run the migrations
-func (m *Migration_20221118_101625) Up() {
+func (m *Schedule_20221118_101625) Up() {
 	// use m.SQL("CREATE TABLE ...") to make schema update
 	sql := "CREATE TABLE IF NOT EXISTS `schedule` (" +
 		"`trace_i_d` varchar(255) NOT NULL PRIMARY KEY," +
@@ -36,7 +36,7 @@ func (m *Migration_20221118_101625) Up() {
 }
 
 // Reverse the migrations
-func (m *Migration_20221118_101625) Down() {
+func (m *Schedule_20221118_101625) Down() {
 	// use m.SQL("DROP TABLE ...") to reverse schema update
 
 }
