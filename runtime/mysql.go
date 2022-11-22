@@ -33,7 +33,7 @@ func (rss *MysqlScheduleStore) Set(s *Schedule) error {
 			// 说明有数据，更新数据
 			s.ContextStore = schedule.ContextStore
 		}
-		if s.ContextStore == "null" {
+		if s.Outputs == "null" {
 			s.Outputs = schedule.Outputs
 		}
 		_, err := o.Update(s)
