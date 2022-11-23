@@ -2,12 +2,14 @@ package migrations
 
 import (
 	"database/sql"
-	"github.com/TencentBlueKing/beego-runtime/conf"
+	"os"
+	"strings"
+
 	"github.com/beego/bee/v2/cmd/commands/migrate"
 	beeLogger "github.com/beego/bee/v2/logger"
 	"github.com/beego/beego/v2/client/orm/migration"
-	"os"
-	"strings"
+
+	"github.com/TencentBlueKing/beego-runtime/conf"
 )
 
 func checkMigrationsTable() {

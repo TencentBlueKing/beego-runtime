@@ -2,11 +2,11 @@ package runtime
 
 import (
 	"encoding/json"
-	"github.com/beego/beego/v2/client/orm"
 	"time"
 
 	"github.com/TencentBlueKing/bk-plugin-framework-go/constants"
 	"github.com/TencentBlueKing/bk-plugin-framework-go/runtime"
+	"github.com/beego/beego/v2/client/orm"
 )
 
 type Poller interface {

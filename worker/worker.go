@@ -2,12 +2,14 @@ package worker
 
 import (
 	"fmt"
+	"strings"
+
 	"github.com/RichardKnop/machinery/v2/example/tracers"
 	"github.com/RichardKnop/machinery/v2/tasks"
-	"github.com/TencentBlueKing/beego-runtime/conf"
 	"github.com/google/uuid"
 	log "github.com/sirupsen/logrus"
-	"strings"
+
+	"github.com/TencentBlueKing/beego-runtime/conf"
 )
 
 func MachineryWorkerRun() error {
