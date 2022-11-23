@@ -34,8 +34,6 @@ func Run() {
 		runCollectstatics()
 	case "worker":
 		runWorker()
-	case "migrate":
-		runMigrate()
 	case "syncapigw":
 		runSyncApigw()
 	default:
