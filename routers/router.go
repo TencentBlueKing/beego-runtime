@@ -1,10 +1,10 @@
 package routers
 
 import (
+	beego "github.com/beego/beego/v2/server/web"
+
 	"github.com/TencentBlueKing/beego-runtime/conf"
 	"github.com/TencentBlueKing/beego-runtime/controllers"
-
-	beego "github.com/beego/beego/v2/server/web"
 )
 
 var PluginApiNamespace = beego.NewNamespace("/bk_plugin/plugin_api/")

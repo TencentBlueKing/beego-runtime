@@ -2,8 +2,9 @@ package worker
 
 import (
 	"context"
-	"github.com/opentracing/opentracing-go"
 	"time"
+
+	"github.com/opentracing/opentracing-go"
 )
 
 type MachineryPoller struct {

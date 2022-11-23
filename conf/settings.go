@@ -2,12 +2,13 @@ package conf
 
 import (
 	"fmt"
-	machineryConfig "github.com/RichardKnop/machinery/v2/config"
-	config "github.com/beego/beego/v2/core/config"
-	"github.com/go-redis/redis/v8"
 	"os"
 	"strings"
 	"time"
+
+	machineryConfig "github.com/RichardKnop/machinery/v2/config"
+	config "github.com/beego/beego/v2/core/config"
+	"github.com/go-redis/redis/v8"
 )
 
 const configData string = `

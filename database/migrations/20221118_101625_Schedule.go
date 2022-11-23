@@ -1,4 +1,4 @@
-package main
+package migrations
 
 import (
 	"github.com/beego/beego/v2/client/orm/migration"
@@ -20,18 +20,18 @@ func init() {
 // Run the migrations
 func (m *Schedule_20221118_101625) Up() {
 	// use m.SQL("CREATE TABLE ...") to make schema update
-	sql := "\tCREATE TABLE IF NOT EXISTS `schedule` (" +
-		"\n\t\t`trace_i_d` varchar(255) NOT NULL PRIMARY KEY," +
-		"\n\t\t`plugin_version` varchar(255) NOT NULL DEFAULT '' ," +
-		"\n\t\t`state` tinyint NOT NULL DEFAULT 0 ," +
-		"\n\t\t`invoke_count` integer NOT NULL DEFAULT 0 ," +
-		"\n\t\t`inputs` varchar(255) NOT NULL DEFAULT '{}' ," +
-		"\n\t\t`context_inputs` varchar(255) NOT NULL DEFAULT '{}' ," +
-		"\n\t\t`context_store` varchar(255) NOT NULL DEFAULT '{}' ," +
-		"\n\t\t`outputs` varchar(255) NOT NULL DEFAULT '{}' ," +
-		"\n\t\t`create_at` date NOT NULL," +
-		"\n\t\t`finished` bool NOT NULL DEFAULT FALSE ," +
-		"\n\t\t`finish_at` datetime\n\t) ENGINE=InnoDB;"
+	sql := "CREATE TABLE IF NOT EXISTS `schedule` (" +
+		"`trace_i_d` varchar(255) NOT NULL PRIMARY KEY," +
+		"`plugin_version` varchar(255) NOT NULL DEFAULT '' ," +
+		"`state` tinyint NOT NULL DEFAULT 0 ," +
+		"`invoke_count` integer NOT NULL DEFAULT 0 ," +
+		"`inputs` varchar(255) NOT NULL DEFAULT '{}' ," +
+		"`context_inputs` varchar(255) NOT NULL DEFAULT '{}' ," +
+		"`context_store` varchar(255) NOT NULL DEFAULT '{}' ," +
+		"`outputs` varchar(255) NOT NULL DEFAULT '{}' ," +
+		"`create_at` date NOT NULL," +
+		"`finished` bool NOT NULL DEFAULT FALSE ," +
+		"`finish_at` datetime) ENGINE=InnoDB;"
 	m.SQL(sql)
 }
 

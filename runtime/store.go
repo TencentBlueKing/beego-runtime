@@ -2,11 +2,12 @@ package runtime
 
 import (
 	"encoding/json"
-	"github.com/TencentBlueKing/beego-runtime/conf"
-	"github.com/beego/beego/v2/client/orm"
 	"time"
 
 	"github.com/TencentBlueKing/bk-plugin-framework-go/constants"
+	"github.com/beego/beego/v2/client/orm"
+
+	"github.com/TencentBlueKing/beego-runtime/conf"
 )
 
 type SimpleObjectStore struct {

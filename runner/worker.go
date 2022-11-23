@@ -1,8 +1,9 @@
 package runner
 
 import (
-	"github.com/TencentBlueKing/beego-runtime/worker"
 	"log"
+
+	"github.com/TencentBlueKing/beego-runtime/worker"
 )
 
 func runWorker() {
