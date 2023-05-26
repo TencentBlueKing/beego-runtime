@@ -35,7 +35,7 @@ func HandlePollTask(traceID string) error {
 	schedule, err := rss.Get(traceID)
 	if err != nil {
 		traceLogger.Errorf("schedule get error: %v", err)
-		return err
+		return nil
 	}
 
 	reader := runtime.JSONContextReader{
@@ -56,5 +56,5 @@ func HandlePollTask(traceID string) error {
 	if err != nil {
 		log.Error("schedule execute error: %v", err)
 	}
-	return err
+	return nil
 }
