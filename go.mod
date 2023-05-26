@@ -9,7 +9,7 @@ require github.com/RichardKnop/machinery/v2 v2.0.11
 require github.com/TencentBlueKing/bk-apigateway-sdks v0.1.16
 
 require (
-	github.com/TencentBlueKing/bk-plugin-framework-go v0.4.0
+	github.com/TencentBlueKing/bk-plugin-framework-go v0.4.1
 	github.com/beego/bee/v2 v2.0.2
 	github.com/go-redis/redis/v8 v8.11.4
 	github.com/google/uuid v1.2.0
