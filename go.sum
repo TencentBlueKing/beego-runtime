@@ -52,8 +52,8 @@ github.com/Shopify/sarama v1.19.0/go.mod h1:FVkBWblsNy7DGZRfXLU0O9RCGt5g3g3yEuWX
 github.com/Shopify/toxiproxy v2.1.4+incompatible/go.mod h1:OXgGpZ6Cli1/URJOF1DMxUHB2q5Ap20/P/eIdh4G0pI=
 github.com/TencentBlueKing/bk-apigateway-sdks v0.1.16 h1:HKRqW/ArEJFi9E79CulIRpsYPH7dVpO7HORKSI3WP/Q=
 github.com/TencentBlueKing/bk-apigateway-sdks v0.1.16/go.mod h1:AUysnGxqnBhVcw7Jp864M8J9EV0GOngIqW9G/QituHg=
-github.com/TencentBlueKing/bk-plugin-framework-go v0.4.0 h1:M5ggUsZHFKfYS7yQl+cQ4y1kdjf5k1k84az9oLHY/Xg=
-github.com/TencentBlueKing/bk-plugin-framework-go v0.4.0/go.mod h1:wZm4JMVux2rl78WDpxaHosI+TLKlCtcbv6x6dusa0vQ=
+github.com/TencentBlueKing/bk-plugin-framework-go v0.4.1 h1:4uv/PlXxgnGiWhSgF26L0dVcoPbHu3N9nKUgxK3WWGE=
+github.com/TencentBlueKing/bk-plugin-framework-go v0.4.1/go.mod h1:wZm4JMVux2rl78WDpxaHosI+TLKlCtcbv6x6dusa0vQ=
 github.com/TencentBlueKing/gopkg v1.0.9 h1:23kSBaLyFaK4aUgmQUD6NW1x/6jn7UDiW3CQMdjLXTw=
 github.com/TencentBlueKing/gopkg v1.0.9/go.mod h1:C8xV79ap0bF2pR10YfhsxO5w5LtJlPakrRunkRbl2yw=
 github.com/VividCortex/gohistogram v1.0.0/go.mod h1:Pf5mBqqDxYaXu3hDrrU+w6nw50o/4+TcAqDqk/vUH7g=
