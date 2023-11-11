@@ -46,8 +46,10 @@ rabbitmq_host = ${RABBITMQ_HOST}
 rabbitmq_user = ${RABBITMQ_USER}
 rabbitmq_password = ${RABBITMQ_PASSWORD}
 
-
 store_backend = ${STORE_BACKEND}
+
+api_gateway_file_path = ${API_GATEWAY_FILE_PATH}
+
 `
 
 var Settings config.Configer
@@ -73,6 +75,8 @@ var apigwManagerMaintainers string
 
 var userTokenKeyName string
 var pluginApiDebugUsername string
+
+var apiGatewayFilePath string
 
 func IsDevMode() bool {
 	return Settings.DefaultString("environment", "dev") == "dev"
@@ -121,6 +125,14 @@ func initApigwBackendHost() {
 
 func ApigwBackendHost() string {
 	return apigwBackendHost
+}
+
+func initApigwFilePath() {
+	apiGatewayFilePath = Settings.DefaultString("api_gateway_file_path", "./data")
+}
+
+func ApigwFilePath() string {
+	return apiGatewayFilePath
 }
 
 func initRedisAddr() {
@@ -306,5 +318,5 @@ func init() {
 	initUserTokenKeyName()
 	initPluginApiDebugUsername()
 	setupLog()
-
+	initApigwFilePath()
 }

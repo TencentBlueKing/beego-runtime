@@ -6,7 +6,6 @@ import (
 	"time"
 
 	"github.com/TencentBlueKing/beego-runtime/conf"
-	"github.com/TencentBlueKing/beego-runtime/utils"
 	"github.com/TencentBlueKing/bk-apigateway-sdks/core/bkapi"
 	"github.com/TencentBlueKing/bk-apigateway-sdks/manager"
 	"github.com/sirupsen/logrus"
@@ -15,14 +14,11 @@ import (
 func runSyncApigw() {
 	logger := logrus.New()
 	// load data path
-	definitionPath, err := utils.GetApigwDefinitionPath()
-	if err != nil {
-		log.Fatalf("get apigw definition path error: %v\n", err)
-	}
-	resourcesPath, err := utils.GetApigwResourcesPath()
-	if err != nil {
-		log.Fatalf("get apigw resources path error: %v\n", err)
-	}
+
+	apiGwFilePath := conf.ApigwFilePath()
+
+	definitionPath := fmt.Sprintf("%s/%s", apiGwFilePath, "api-definition.yml")
+	resourcesPath := fmt.Sprintf("%s/%s", apiGwFilePath, "api-resources.yml")
 
 	// create manager
 	config := bkapi.ClientConfig{
