@@ -9,14 +9,13 @@ require github.com/RichardKnop/machinery/v2 v2.0.11
 require github.com/TencentBlueKing/bk-apigateway-sdks v0.1.16
 
 require (
-	github.com/TencentBlueKing/bk-plugin-framework-go v0.4.1
+	github.com/TencentBlueKing/bk-plugin-framework-go v0.5.0
 	github.com/beego/bee/v2 v2.0.2
 	github.com/go-redis/redis/v8 v8.11.4
 	github.com/google/uuid v1.2.0
 	github.com/opentracing/opentracing-go v1.2.0
 	github.com/pkg/errors v0.9.1
 	github.com/sirupsen/logrus v1.8.1
-	golang.org/x/mod v0.4.2
 	gopkg.in/natefinch/lumberjack.v2 v2.0.0
 )
 
@@ -86,10 +85,11 @@ require (
 	golang.org/x/arch v0.0.0-20190927153633-4e8777c89be4 // indirect
 	golang.org/x/crypto v0.0.0-20210513164829-c07d793c2f9a // indirect
 	golang.org/x/lint v0.0.0-20210508222113-6edffad5e616 // indirect
+	golang.org/x/mod v0.4.2 // indirect
 	golang.org/x/net v0.0.0-20220225172249-27dd8689420f // indirect
 	golang.org/x/oauth2 v0.0.0-20220223155221-ee480838109b // indirect
 	golang.org/x/sync v0.0.0-20220601150217-0de741cfad7f // indirect
-	golang.org/x/sys v0.0.0-20220520151302-bc2c85ada10a // indirect
+	golang.org/x/sys v0.14.0 // indirect
 	golang.org/x/text v0.3.7 // indirect
 	golang.org/x/tools v0.1.2 // indirect
 	golang.org/x/xerrors v0.0.0-20200804184101-5ec99f83aff1 // indirect

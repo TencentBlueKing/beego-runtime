@@ -52,8 +52,8 @@ github.com/Shopify/sarama v1.19.0/go.mod h1:FVkBWblsNy7DGZRfXLU0O9RCGt5g3g3yEuWX
 github.com/Shopify/toxiproxy v2.1.4+incompatible/go.mod h1:OXgGpZ6Cli1/URJOF1DMxUHB2q5Ap20/P/eIdh4G0pI=
 github.com/TencentBlueKing/bk-apigateway-sdks v0.1.16 h1:HKRqW/ArEJFi9E79CulIRpsYPH7dVpO7HORKSI3WP/Q=
 github.com/TencentBlueKing/bk-apigateway-sdks v0.1.16/go.mod h1:AUysnGxqnBhVcw7Jp864M8J9EV0GOngIqW9G/QituHg=
-github.com/TencentBlueKing/bk-plugin-framework-go v0.4.1 h1:4uv/PlXxgnGiWhSgF26L0dVcoPbHu3N9nKUgxK3WWGE=
-github.com/TencentBlueKing/bk-plugin-framework-go v0.4.1/go.mod h1:wZm4JMVux2rl78WDpxaHosI+TLKlCtcbv6x6dusa0vQ=
+github.com/TencentBlueKing/bk-plugin-framework-go v0.5.0 h1:MRNdzBwPsU8cc0033Q/IoJJSJyrSNK53rByZ7RJVFXw=
+github.com/TencentBlueKing/bk-plugin-framework-go v0.5.0/go.mod h1:2uL9YmXTd6K0uHz7UkdYDjHHezyDvNJcWKvNqpuDDkk=
 github.com/TencentBlueKing/gopkg v1.0.9 h1:23kSBaLyFaK4aUgmQUD6NW1x/6jn7UDiW3CQMdjLXTw=
 github.com/TencentBlueKing/gopkg v1.0.9/go.mod h1:C8xV79ap0bF2pR10YfhsxO5w5LtJlPakrRunkRbl2yw=
 github.com/VividCortex/gohistogram v1.0.0/go.mod h1:Pf5mBqqDxYaXu3hDrrU+w6nw50o/4+TcAqDqk/vUH7g=
@@ -906,8 +906,9 @@ golang.org/x/sys v0.0.0-20210603081109-ebe580a85c40/go.mod h1:oPkhp1MJrh7nUepCBc
 golang.org/x/sys v0.0.0-20210615035016-665e8c7367d1/go.mod h1:oPkhp1MJrh7nUepCBck5+mAzfO9JrbApNNgaTdGDITg=
 golang.org/x/sys v0.0.0-20211216021012-1d35b9e2eb4e/go.mod h1:oPkhp1MJrh7nUepCBck5+mAzfO9JrbApNNgaTdGDITg=
 golang.org/x/sys v0.0.0-20220114195835-da31bd327af9/go.mod h1:oPkhp1MJrh7nUepCBck5+mAzfO9JrbApNNgaTdGDITg=
-golang.org/x/sys v0.0.0-20220520151302-bc2c85ada10a h1:dGzPydgVsqGcTRVwiLJ1jVbufYwmzD3LfVPLKsKg+0k=
 golang.org/x/sys v0.0.0-20220520151302-bc2c85ada10a/go.mod h1:oPkhp1MJrh7nUepCBck5+mAzfO9JrbApNNgaTdGDITg=
+golang.org/x/sys v0.14.0 h1:Vz7Qs629MkJkGyHxUlRHizWJRG2j8fbQKjELVSNhy7Q=
+golang.org/x/sys v0.14.0/go.mod h1:/VUhepiaJMQUp4+oa/7Zr1D23ma6VTLIYjOOTFZPUcA=
 golang.org/x/term v0.0.0-20201126162022-7de9c90e9dd1/go.mod h1:bj7SfCRtBDWHUb9snDiAeCFNEtKQo2Wmx5Cou7ajbmo=
 golang.org/x/term v0.0.0-20210927222741-03fcf44c2211/go.mod h1:jbD1KX2456YbFQfuXm/mYQcufACuNUgVhRMnK/tPxf8=
 golang.org/x/text v0.0.0-20170915032832-14c0d48ead0c/go.mod h1:NqM8EUOU14njkJ3fqMW+pc6Ldnwhi/IjpwHt7yyuwOQ=
