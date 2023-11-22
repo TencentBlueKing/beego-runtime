@@ -27,7 +27,7 @@ require (
 	github.com/alecthomas/jsonschema v0.0.0-20220203024042-cc89723c9db0 // indirect
 	github.com/aws/aws-sdk-go v1.37.16 // indirect
 	github.com/beorn7/perks v1.0.1 // indirect
-	github.com/cespare/xxhash/v2 v2.1.2 // indirect
+	github.com/cespare/xxhash/v2 v2.2.0 // indirect
 	github.com/cosiner/argv v0.1.0 // indirect
 	github.com/davecgh/go-spew v1.1.1 // indirect
 	github.com/dgryski/go-rendezvous v0.0.0-20200823014737-9f7001d12a5f // indirect
@@ -101,6 +101,8 @@ require (
 	gopkg.in/h2non/gentleman.v2 v2.0.5 // indirect
 	gopkg.in/ini.v1 v1.51.0 // indirect
 	gopkg.in/yaml.v2 v2.4.0 // indirect
-	gopkg.in/yaml.v3 v3.0.0-20210107192922-496545a6307b // indirect
+	gopkg.in/yaml.v3 v3.0.1 // indirect
 	logur.dev/logur v0.17.0 // indirect
 )
+
+replace github.com/RichardKnop/machinery/v2 v2.0.11 => github.com/hanshuaikang/machinery/v2 v2.0.13

@@ -262,6 +262,7 @@ func MachineryCnf() *machineryConfig.Config {
 			ExchangeType:  "direct",
 			BindingKey:    "schedule_task",
 			PrefetchCount: 3,
+			AutoDelete:    false,
 		},
 	}
 	return cnf
