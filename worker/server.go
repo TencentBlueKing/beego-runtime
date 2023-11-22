@@ -2,7 +2,7 @@ package worker
 
 import (
 	"github.com/RichardKnop/machinery/v2"
-	amqpbackend "github.com/RichardKnop/machinery/v2/backends/amqp"
+	nullbackend "github.com/RichardKnop/machinery/v2/backends/null"
 	amqpbroker "github.com/RichardKnop/machinery/v2/brokers/amqp"
 	eagerlock "github.com/RichardKnop/machinery/v2/locks/eager"
 	"github.com/TencentBlueKing/beego-runtime/conf"
@@ -11,7 +11,7 @@ import (
 func NewServer() (*machinery.Server, error) {
 	cnf := conf.MachineryCnf()
 	broker := amqpbroker.New(cnf)
-	backend := amqpbackend.New(cnf)
+	backend := nullbackend.New()
 	lock := eagerlock.New()
 	server := machinery.NewServer(cnf, broker, backend, lock)
 
