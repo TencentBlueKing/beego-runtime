@@ -104,5 +104,3 @@ require (
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 	logur.dev/logur v0.17.0 // indirect
 )
-
-replace github.com/RichardKnop/machinery/v2 v2.0.11 => github.com/hanshuaikang/machinery/v2 v2.0.13

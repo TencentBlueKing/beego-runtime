@@ -3,6 +3,7 @@ package conf
 import (
 	"fmt"
 	"math/rand"
+	"runtime"
 	"time"
 
 	log "github.com/sirupsen/logrus"
@@ -10,6 +11,20 @@ import (
 )
 
 var letters = []rune("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890")
+
+type loggersHook struct{}
+
+func (h *loggersHook) Levels() []log.Level {
+	return log.AllLevels
+}
+
+func (h *loggersHook) Fire(entry *log.Entry) error {
+	pc, file, _, _ := runtime.Caller(9)
+	funcName := runtime.FuncForPC(pc).Name()
+	entry.Data["funcName"] = funcName
+	entry.Data["pathname"] = file
+	return nil
+}
 
 func randSeq(n int) string {
 	b := make([]rune, n)
@@ -26,6 +41,7 @@ func setupLog() {
 
 	rand.Seed(time.Now().UnixNano())
 
+	log.AddHook(&loggersHook{})
 	log.SetFormatter(&log.JSONFormatter{
 		FieldMap: log.FieldMap{
 			log.FieldKeyLevel: "levelname",
