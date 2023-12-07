@@ -43,6 +43,7 @@ func setupLog() {
 
 	log.AddHook(&loggersHook{})
 	log.SetFormatter(&log.JSONFormatter{
+		TimestampFormat: time.RFC3339Nano,
 		FieldMap: log.FieldMap{
 			log.FieldKeyLevel: "levelname",
 			log.FieldKeyMsg:   "message",
