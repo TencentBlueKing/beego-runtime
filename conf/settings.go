@@ -1,7 +1,9 @@
 package conf
 
 import (
+	json "encoding/json"
 	"fmt"
+	"net/url"
 	"os"
 	"strings"
 	"time"
@@ -17,7 +19,7 @@ plugin_secret = ${BKPAAS_APP_SECRET}
 environment = ${BKPAAS_ENVIRONMENT}
 log_file_prefix = ${BKPAAS_LOG_NAME_PREFIX}
 process_type = ${BKPAAS_PROCESS_TYPE}
-app_default_subdomains = ${BKPAAS_ENGINE_APP_DEFAULT_SUBDOMAINS}
+app_default_subdomains = ${BKPAAS_DEFAULT_PREALLOCATED_URLS}
 
 redis_host = ${REDIS_HOST}
 redis_port = ${REDIS_PORT}
@@ -40,6 +42,13 @@ gcs_mysql_password = ${GCS_MYSQL_PASSWORD}
 gcs_mysql_host = ${GCS_MYSQL_HOST}
 gcs_mysql_port = ${GCS_MYSQL_PORT}
 
+
+mysql_name = ${MYSQL_NAME}
+mysql_user = ${MYSQL_USER}
+mysql_password = ${MYSQL_PASSWORD}
+mysql_host = ${MYSQL_HOST}
+mysql_port = ${MYSQL_PORT}
+
 rabbitmq_vhost = ${RABBITMQ_VHOST}
 rabbitmq_port = ${RABBITMQ_PORT}
 rabbitmq_host = ${RABBITMQ_HOST}
@@ -59,6 +68,7 @@ var pluginSecret string
 var environment string
 var port int
 var apigwBackendHost string
+var apigwSubPath string
 
 var redisAddr string
 var redisPassword string
@@ -120,11 +130,36 @@ func Port() int {
 
 func initApigwBackendHost() {
 	subdomains := Settings.DefaultString("app_default_subdomains", "")
-	apigwBackendHost = strings.Split(subdomains, ";")[0]
+	// 定义一个map来存储反序列化后的数据
+	var urls map[string]string
+	apigwSubPath = ""
+	apigwBackendHost = ""
+	// 反序列化：把 JSON 字符串转换为 map
+	err := json.Unmarshal([]byte(subdomains), &urls)
+	if err != nil {
+		return
+	}
+	rawURL, ok := urls[environment]
+	if !ok {
+		return
+	}
+	parsedURL, err := url.Parse(rawURL)
+	if err != nil {
+		return
+	}
+	// 域名部分包括 scheme 和 host
+	// 域名后的部分是 path
+	apigwSubPath = strings.TrimLeft(parsedURL.Path, "/")
+	apigwBackendHost = parsedURL.Host
+
 }
 
 func ApigwBackendHost() string {
 	return apigwBackendHost
+}
+
+func ApigwSubPath() string {
+	return apigwSubPath
 }
 
 func initApigwFilePath() {
@@ -269,17 +304,17 @@ func MachineryCnf() *machineryConfig.Config {
 }
 
 func initMysqlConAddr() {
-	//gcs_mysql_name = ${GCS_MYSQL_NAME}
-	//gcs_mysql_user = ${GCS_MYSQL_USER}
-	//gcs_mysql_password = ${GCS_MYSQL_PASSWORD}
-	//gcs_mysql_host = ${GCS_MYSQL_HOST}
-	//gcs_mysql_port = ${GCS_MYSQL_PORT}
 
 	mysqlName := Settings.DefaultString("gcs_mysql_name", "'")
-	mysqlUsername := Settings.DefaultString("gcs_mysql_user", "root")
-	mysqlPassword := Settings.DefaultString("gcs_mysql_password", "root")
-	mysqlHost := Settings.DefaultString("gcs_mysql_host", "127.0.0.1")
-	mysqlPort := Settings.DefaultInt("gcs_mysql_port", 3306)
+	dbPrefix := ""
+	if mysqlName != "'" {
+		dbPrefix = "gcs_"
+	}
+	mysqlName = Settings.DefaultString(dbPrefix+"mysql_name", "'")
+	mysqlUsername := Settings.DefaultString(dbPrefix+"mysql_user", "root")
+	mysqlPassword := Settings.DefaultString(dbPrefix+"mysql_password", "root")
+	mysqlHost := Settings.DefaultString(dbPrefix+"mysql_host", "127.0.0.1")
+	mysqlPort := Settings.DefaultInt(dbPrefix+"mysql_port", 3306)
 
 	mysqlConStr = fmt.Sprintf(
 		"%v:%v@tcp(%v:%v)/%v?charset=utf8",

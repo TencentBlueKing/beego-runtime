@@ -22,7 +22,7 @@ paths:
         backend:
           type: HTTP
           method: post
-          path: /bk_plugin/invoke/{version}
+          path: /{env.api_sub_path}bk_plugin/invoke/{version}
           matchSubpath: false
           timeout: 0
           upstreams: {}
@@ -45,7 +45,7 @@ paths:
         backend:
           type: HTTP
           method: any
-          path: /bk_plugin/plugin_api/
+          path: /{env.api_sub_path}bk_plugin/plugin_api/
           matchSubpath: true
           timeout: 0
           upstreams: {}
