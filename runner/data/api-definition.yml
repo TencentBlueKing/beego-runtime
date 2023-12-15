@@ -8,7 +8,8 @@ apigateway:
 
 stage:
   name: {{ data.BK_PLUGIN_APIGW_STAGE_NAME }}
-  vars: {}
+  vars:
+    api_sub_path: "{{ data.BK_PLUGIN_APIGW_BACKEND_SUB_PATH }}"
   proxy_http:
     timeout: 60
     upstreams:
@@ -27,6 +28,6 @@ resources:
 release:
   version: {{ data.BK_PLUGIN_APIGW_RESOURCE_VERSION }}
   resource_version_name: "auto-release-version"
-  stage_names: 
+  stage_names:
     - {{ data.BK_PLUGIN_APIGW_STAGE_NAME }}
   comment: "auto release by bk-plugin-runtime"
