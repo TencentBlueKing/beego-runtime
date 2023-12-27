@@ -208,7 +208,7 @@ func FinishedScheduleExpiration() time.Duration {
 }
 
 func initWorkerConcurrency() {
-	workerConcurrency = Settings.DefaultInt("worker_concurrency", 20)
+	workerConcurrency = Settings.DefaultInt("worker_concurrency", 0)
 }
 
 func WorkerConcurrency() int {
@@ -290,7 +290,6 @@ func MachineryCnf() *machineryConfig.Config {
 	cnf := &machineryConfig.Config{
 		Broker:          brokerUrl,
 		DefaultQueue:    "schedule",
-		ResultBackend:   brokerUrl,
 		ResultsExpireIn: 3600,
 		AMQP: &machineryConfig.AMQPConfig{
 			Exchange:      "schedule_exchange",

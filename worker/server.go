@@ -8,7 +8,14 @@ import (
 	"github.com/TencentBlueKing/beego-runtime/conf"
 )
 
+var server *machinery.Server
+
 func NewServer() (*machinery.Server, error) {
+
+	if server != nil {
+		return server, nil
+	}
+
 	cnf := conf.MachineryCnf()
 	broker := amqpbroker.New(cnf)
 	backend := nullbackend.New()
