@@ -35,6 +35,7 @@ func runSyncApigw() {
 			"BK_PLUGIN_APIGW_NAME":             conf.ApigwApiName(),
 			"BK_PLUGIN_APIGW_STAGE_NAME":       conf.Environment(),
 			"BK_PLUGIN_APIGW_BACKEND_HOST":     conf.ApigwBackendHost(),
+			"BK_PLUGIN_APIGW_BACKEND_SCHEME":   conf.ApigwScheme(),
 			"BK_PLUGIN_APIGW_BACKEND_SUB_PATH": conf.ApigwSubPath(),
 			"BK_PLUGIN_APIGW_RESOURCE_VERSION": fmt.Sprintf("1.0.0+%v", time.Now().Unix()),
 			"RESOURCES_FILE_PATH":              resourcesPath,

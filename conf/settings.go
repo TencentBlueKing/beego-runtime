@@ -69,6 +69,7 @@ var environment string
 var port int
 var apigwBackendHost string
 var apigwSubPath string
+var apigwScheme string
 
 var redisAddr string
 var redisPassword string
@@ -132,6 +133,7 @@ func initApigwBackendHost() {
 	subdomains := Settings.DefaultString("app_default_subdomains", "")
 	// 定义一个map来存储反序列化后的数据
 	var urls map[string]string
+	apigwScheme = "http"
 	apigwSubPath = ""
 	apigwBackendHost = ""
 	// 反序列化：把 JSON 字符串转换为 map
@@ -149,6 +151,7 @@ func initApigwBackendHost() {
 	}
 	// 域名部分包括 scheme 和 host
 	// 域名后的部分是 path
+	apigwScheme = parsedURL.Scheme
 	apigwSubPath = strings.TrimLeft(parsedURL.Path, "/")
 	apigwBackendHost = parsedURL.Host
 
@@ -156,6 +159,10 @@ func initApigwBackendHost() {
 
 func ApigwBackendHost() string {
 	return apigwBackendHost
+}
+
+func ApigwScheme() string {
+	return apigwScheme
 }
 
 func ApigwSubPath() string {
