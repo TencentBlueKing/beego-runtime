@@ -39,7 +39,6 @@ type InvokePostResponse struct {
 func (c *InvokeController) Post() {
 	traceID := strings.Replace(uuid.NewString(), "-", "", -1)
 	traceLogger := log.WithField("trace_id", traceID)
-	traceLogger.Info("request headers:", c.Ctx.Request.Header)
 
 	// 只有非DEV环境才会去进行网关认证，方便本地调试
 	if !conf.IsDevMode() {
