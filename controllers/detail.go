@@ -13,6 +13,7 @@ type DetailController struct {
 
 type DetailGetData struct {
 	Version       string                 `json:"version"`
+	Desc          string                 `json:"desc"`
 	Inputs        map[string]interface{} `json:"inputs"`
 	ContextInputs map[string]interface{} `json:"context_inputs"`
 	Outputs       map[string]interface{} `json:"outputs"`
@@ -46,6 +47,7 @@ func (c *DetailController) Get() {
 		},
 		Data: &DetailGetData{
 			Version:       version,
+			Desc:          detail.Plugin().Desc(),
 			Inputs:        detail.InputsSchemaJSON(),
 			ContextInputs: detail.ContextInputsSchemaJSON(),
 			Outputs:       detail.OutputsSchemaJSON(),
