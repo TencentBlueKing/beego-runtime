@@ -2,9 +2,9 @@ package worker
 
 import (
 	"context"
-	"time"
-
 	"github.com/opentracing/opentracing-go"
+	log "github.com/sirupsen/logrus"
+	"time"
 )
 
 type MachineryPoller struct {
@@ -21,7 +21,11 @@ func (p *MachineryPoller) Poll(traceID string, after time.Duration) error {
 	span, ctx := opentracing.StartSpanFromContext(context.Background(), "send")
 	defer span.Finish()
 
-	server.SendTaskWithContext(ctx, task)
+	_, err = server.SendTaskWithContext(ctx, task)
+
+	if err != nil {
+		log.Errorf("SendTaskWithContext error %s", err)
+	}
 
 	return nil
 }
