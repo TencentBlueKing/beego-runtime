@@ -3,11 +3,13 @@ package controllers
 import (
 	"bytes"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"io"
 	"mime/multipart"
 	"net/http"
 	"net/url"
+	"regexp"
 	"strings"
 
 	web "github.com/beego/beego/v2/server/web"
@@ -18,16 +20,12 @@ type PluginApiDispatchController struct {
 	PluginApiController
 }
 
-type PluginApiDispatchBase struct {
-	Url      string `json:"url" form:"url"`
-	Method   string `json:"method" form:"method"`
-	Username string `json:"username" form:"username"`
-}
-
 type PluginApiDispatchParam struct {
-	PluginApiDispatchBase
-	Data json.RawMessage         `json:"data" form:"data"`
-	File []*multipart.FileHeader `form:"file"`
+	Url      string                  `json:"url" form:"url"`
+	Method   string                  `json:"method" form:"method"`
+	Username string                  `json:"username" form:"username"`
+	Data     json.RawMessage         `json:"data" form:"data"`
+	Files    []*multipart.FileHeader `json:"-" form:"-"`
 }
 
 type PluginApiDispatchResponse struct {
@@ -44,6 +42,64 @@ func handleErrResponse(c *PluginApiDispatchController, err error, msg string) {
 		Data: nil,
 	}
 	c.ServeJSON()
+}
+
+func parseMixedRequest(c *PluginApiDispatchController) (*PluginApiDispatchParam, bool, error) {
+	param := &PluginApiDispatchParam{}
+	bodyBytes, _ := io.ReadAll(c.Ctx.Request.Body)
+	c.Ctx.Request.Body.Close()
+	c.Ctx.Request.Body = io.NopCloser(bytes.NewBuffer(bodyBytes))
+
+	// 根据内容特征判断真实类型
+	isMultipart := strings.Contains(string(bodyBytes), "form-data") ||
+		len(c.Ctx.Request.MultipartForm.File) > 0
+	log.Infof("isMultipart: %v", isMultipart)
+
+	if !isMultipart {
+		// 普通情况直接按 json 解析
+		err := c.BindJSON(param)
+		return param, isMultipart, err
+	} else {
+		// 表单解析 设置请求头来适配 multipart 解析
+		// c.Ctx.Request.Header.Set("Content-Type", "multipart/form-data")
+		boundary := extractBoundary(bodyBytes)
+		if boundary == "" {
+			return nil, isMultipart, errors.New("invalid multipart content")
+		}
+		c.Ctx.Request.Header.Set("Content-Type", fmt.Sprintf("multipart/form-data; boundary=%s", boundary))
+		if err := c.Ctx.Request.ParseMultipartForm(32 << 20); err != nil {
+			return nil, isMultipart, err
+		}
+
+		// 绑定表单字段
+		if err := c.BindForm(param); err != nil {
+			return nil, isMultipart, err
+		}
+
+		// 获取上传文件
+		for _, headers := range c.Ctx.Request.MultipartForm.File {
+			param.Files = append(param.Files, headers...)
+		}
+
+		return param, isMultipart, nil
+	}
+}
+
+func extractBoundary(body []byte) string {
+	// 匹配标准的boundary模式
+	re := regexp.MustCompile(`(?i)\bboundary=([^;]+)`)
+	if matches := re.FindSubmatch(body); len(matches) > 1 {
+		return strings.Trim(string(matches[1]), `"`)
+	}
+
+	// 回退到检测实际分隔线
+	lines := bytes.Split(body, []byte{'\r', '\n'})
+	for _, line := range lines {
+		if bytes.HasPrefix(line, []byte("--")) && len(line) > 20 {
+			return string(bytes.TrimPrefix(line, []byte("--")))
+		}
+	}
+	return ""
 }
 
 func (c *PluginApiDispatchController) FindController(path string, method string) (string, bool) {
@@ -68,45 +124,18 @@ func (c *PluginApiDispatchController) FindController(path string, method string)
 }
 
 func (c *PluginApiDispatchController) Post() {
-	var param PluginApiDispatchParam
+	var param *PluginApiDispatchParam
 	var errMsg string
 
-	contentType := c.Ctx.Request.Header.Get("Content-Type")
-
-	if strings.HasPrefix(contentType, "multipart/form-data") {
-		// 处理multipart/form-data请求
-		if err := c.BindForm(&param); err != nil {
-			errMsg = "request param bind fail"
-			log.Errorf("%s %v\n", errMsg, err)
-			handleErrResponse(c, err, errMsg)
-			return
-		}
-
-		// 文件无法直接绑定 需要手动解析
-		if err := c.Ctx.Request.ParseMultipartForm(32 << 20); err != nil {
-			errMsg = "failed to parse multipart form"
-			log.Errorf("%s %v\n", errMsg, err)
-			handleErrResponse(c, err, errMsg)
-			return
-		}
-
-		fileHeaders := c.Ctx.Request.MultipartForm.File["file"]
-		if len(fileHeaders) == 0 {
-			log.Warn("no files uploaded")
-		}
-
-		for _, fileHeader := range fileHeaders {
-			param.File = append(param.File, fileHeader)
-		}
-
-	} else {
-		if err := c.BindJSON(&param); err != nil {
-			errMsg = "param bind error"
-			log.Errorf("%s %v\n", errMsg, err)
-			handleErrResponse(c, err, errMsg)
-			return
-		}
+	param, isMultipart, err := parseMixedRequest(c)
+	if err != nil {
+		errMsg = "parse request error"
+		log.Errorf("%s, %v", errMsg, err)
+		handleErrResponse(c, err, errMsg)
+		return
 	}
+	log.Infof("params: %+v", param)
+
 	parsedURL, err := url.Parse(param.Url)
 	if err != nil {
 		errMsg = "param.Url parse fail"
@@ -142,23 +171,25 @@ func (c *PluginApiDispatchController) Post() {
 		newRequest.URL.RawQuery = parsedURL.RawQuery
 	} else if upperMethod == http.MethodPost {
 
-		if strings.HasPrefix(contentType, "multipart/form-data") {
+		if isMultipart {
 			var buffer bytes.Buffer
 			writer := multipart.NewWriter(&buffer)
+			defer writer.Close()
 
 			if len(param.Data) > 0 {
 				_ = writer.WriteField("data", string(param.Data))
 			}
 
-			for _, fileHeader := range param.File {
+			for _, fileHeader := range param.Files {
 				file, err := fileHeader.Open()
+				defer file.Close()
 				if err != nil {
 					errMsg = "open file fail"
 					log.Errorf("%s, %v", errMsg, err)
 					handleErrResponse(c, err, errMsg)
 					return
 				}
-				part, err := writer.CreateFormFile("file", fileHeader.Filename)
+				part, err := writer.CreateFormFile(fileHeader.Filename, fileHeader.Filename)
 				if err != nil {
 					errMsg = "create form file fail"
 					log.Errorf("%s, %v", errMsg, err)
