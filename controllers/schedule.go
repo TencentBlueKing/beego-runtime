@@ -19,6 +19,7 @@ type ScheduleGetData struct {
 	PluginVersion string                 `json:"plugin_version"`
 	State         int                    `json:"state"`
 	Outputs       map[string]interface{} `json:"outputs"`
+	Err           string                 `json:"err,omitempty"`
 	CreateAt      string                 `json:"create_at"`
 	FinishAt      string                 `json:"finish_at"`
 }
@@ -72,6 +73,7 @@ func (c *ScheduleController) Get() {
 			PluginVersion: schedule.PluginVersion,
 			State:         int(schedule.State),
 			Outputs:       outputs,
+			Err:           schedule.Error, // 返回错误信息供 SOPS 展示
 			CreateAt:      schedule.CreateAt.Format(timeFormat),
 			FinishAt:      finishAt,
 		},

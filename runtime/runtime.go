@@ -134,8 +134,11 @@ func (r *ScheduleExecuteRuntime) SetPoll(traceID string, version string, invokeC
 }
 
 func (r *ScheduleExecuteRuntime) SetFail(traceID string, err error) error {
-	if err := r.updateSchedule(constants.StateFail, r.Schedule.InvokeCount, true); err != nil {
-		return err
+	if updateErr := r.updateSchedule(constants.StateFail, r.Schedule.InvokeCount, true); updateErr != nil {
+		return updateErr
+	}
+	if err != nil {
+		r.Schedule.Error = err.Error()
 	}
 	return r.ScheduleStore.Set(r.Schedule)
 }

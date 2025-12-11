@@ -47,6 +47,7 @@ type Schedule struct {
 	ContextInputs orm.JSONField
 	ContextStore  orm.JSONField
 	Outputs       orm.JSONField
+	Error         string    `orm:"type(text);null"`
 	CreateAt      time.Time `orm:"auto_now_add;type(date)"`
 	Finished      bool
 	FinishAt      time.Time `orm:"null"`
