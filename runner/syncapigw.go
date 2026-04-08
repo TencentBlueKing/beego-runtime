@@ -7,6 +7,7 @@ import (
 	"time"
 
 	"github.com/TencentBlueKing/beego-runtime/conf"
+	"github.com/TencentBlueKing/bk-apigateway-sdks/apigateway"
 	"github.com/TencentBlueKing/bk-apigateway-sdks/core/bkapi"
 	"github.com/TencentBlueKing/bk-apigateway-sdks/manager"
 	"github.com/sirupsen/logrus"
@@ -64,7 +65,7 @@ func runSyncApigw() {
 		conf.ApigwApiName(),
 		config,
 		definition,
-		nil,
+		apigateway.New,
 	)
 	if err != nil {
 		log.Fatalf("create apigw manager error: %v\n", err)
