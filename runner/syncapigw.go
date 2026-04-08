@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"strings"
 	"time"
 
 	"github.com/TencentBlueKing/beego-runtime/conf"
@@ -11,7 +12,6 @@ import (
 	"github.com/TencentBlueKing/bk-apigateway-sdks/core/bkapi"
 	"github.com/TencentBlueKing/bk-apigateway-sdks/manager"
 	"github.com/sirupsen/logrus"
-	yaml "gopkg.in/yaml.v3"
 )
 
 func loadDefinitionWithVars(path string, vars map[string]string) (*manager.Definition, error) {
@@ -40,7 +40,7 @@ func runSyncApigw() {
 	version := fmt.Sprintf("1.0.0+%v", time.Now().Unix())
 
 	templateVars := map[string]string{
-		"BK_APIGW_MANAGER_MAINTAINERS":     fmt.Sprintf("%v", conf.ApigwManagerMaintainers()),
+		"BK_APIGW_MANAGER_MAINTAINERS":     strings.Join(conf.ApigwManagerMaintainers(), ","),
 		"BK_PLUGIN_APIGW_NAME":             conf.ApigwApiName(),
 		"BK_PLUGIN_APIGW_STAGE_NAME":       conf.Environment(),
 		"BK_PLUGIN_APIGW_BACKEND_HOST":     conf.ApigwBackendHost(),
@@ -87,11 +87,9 @@ func runSyncApigw() {
 	if err != nil {
 		log.Fatalf("read resources file error: %v\n", err)
 	}
-	var resourcesData map[string]interface{}
-	if err := yaml.Unmarshal(resourcesContent, &resourcesData); err != nil {
-		log.Fatalf("parse resources file error: %v\n", err)
-	}
-	syncResourcesRes, err := mgr.SyncResourcesConfig(resourcesData)
+	syncResourcesRes, err := mgr.SyncResourcesConfig(map[string]interface{}{
+		"content": string(resourcesContent),
+	})
 	logger.Printf("sync apigw resources return: %v\n", syncResourcesRes)
 	if err != nil {
 		log.Fatalf("sync apigw resources error: %v\n", err)
