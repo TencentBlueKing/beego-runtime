@@ -88,6 +88,7 @@ var userTokenKeyName string
 var pluginApiDebugUsername string
 
 var apiGatewayFilePath string
+var pluginTenantID string
 
 func IsDevMode() bool {
 	return Settings.DefaultString("environment", "dev") == "dev"
@@ -175,6 +176,17 @@ func initApigwFilePath() {
 
 func ApigwFilePath() string {
 	return apiGatewayFilePath
+}
+
+func initPluginTenantID() {
+	pluginTenantID = os.Getenv("BKPAAS_APP_TENANT_ID")
+	if pluginTenantID == "" {
+		pluginTenantID = os.Getenv("BK_APP_TENANT_ID")
+	}
+}
+
+func PluginTenantID() string {
+	return pluginTenantID
 }
 
 func initRedisAddr() {
@@ -362,4 +374,5 @@ func init() {
 	initPluginApiDebugUsername()
 	setupLog()
 	initApigwFilePath()
+	initPluginTenantID()
 }
