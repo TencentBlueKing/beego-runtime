@@ -27,7 +27,13 @@ func loadDefinitionWithVars(path string, vars map[string]string) (*manager.Defin
 		return os.Getenv(key)
 	})
 
-	return manager.NewDefinitionFromYaml([]byte(rendered))
+	def, err := manager.NewDefinitionFromYaml([]byte(rendered))
+	if err != nil {
+		log.Printf("[DEBUG] definition file path: %s\n", path)
+		log.Printf("[DEBUG] rendered yaml content:\n%s\n", rendered)
+		return nil, err
+	}
+	return def, nil
 }
 
 func runSyncApigw() {
@@ -48,6 +54,11 @@ func runSyncApigw() {
 		"BK_PLUGIN_APIGW_BACKEND_SUB_PATH": conf.ApigwSubPath(),
 		"BK_PLUGIN_APIGW_RESOURCE_VERSION": version,
 		"RESOURCES_FILE_PATH":              resourcesPath,
+	}
+
+	logger.Printf("[DEBUG] apigw file path: %s\n", apiGwFilePath)
+	for k, v := range templateVars {
+		logger.Printf("[DEBUG] templateVar %s = %q\n", k, v)
 	}
 
 	definition, err := loadDefinitionWithVars(definitionPath, templateVars)

@@ -243,7 +243,7 @@ func ApigwEndpoint() string {
 }
 
 func initApigwApiName() {
-	apigwApiName = Settings.DefaultString("apigw_api_name", "'")
+	apigwApiName = Settings.DefaultString("apigw_api_name", "")
 }
 
 func ApigwApiName() string {
