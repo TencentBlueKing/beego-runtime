@@ -11,7 +11,9 @@ import (
 	"github.com/TencentBlueKing/bk-apigateway-sdks/apigateway"
 	"github.com/TencentBlueKing/bk-apigateway-sdks/core/bkapi"
 	"github.com/TencentBlueKing/bk-apigateway-sdks/manager"
+	"github.com/flosch/pongo2/v5"
 	"github.com/sirupsen/logrus"
+	yaml "gopkg.in/yaml.v3"
 )
 
 func loadDefinitionWithVars(path string, vars map[string]string) (*manager.Definition, error) {
@@ -20,20 +22,103 @@ func loadDefinitionWithVars(path string, vars map[string]string) (*manager.Defin
 		return nil, fmt.Errorf("failed to read %s: %w", path, err)
 	}
 
-	rendered := os.Expand(string(content), func(key string) string {
-		if v, ok := vars[key]; ok {
-			return v
-		}
-		return os.Getenv(key)
-	})
+	rendered, err := renderDefinition(string(content), vars)
+	if err != nil {
+		return nil, err
+	}
 
-	def, err := manager.NewDefinitionFromYaml([]byte(rendered))
+	def, err := newDefinitionFromRendered(rendered, isLegacyDefinitionTemplate(string(content)))
 	if err != nil {
 		log.Printf("[DEBUG] definition file path: %s\n", path)
 		log.Printf("[DEBUG] rendered yaml content:\n%s\n", rendered)
 		return nil, err
 	}
 	return def, nil
+}
+
+func renderDefinition(content string, vars map[string]string) (string, error) {
+	if isLegacyDefinitionTemplate(content) {
+		template, err := pongo2.FromString(content)
+		if err != nil {
+			return "", fmt.Errorf("failed to parse legacy definition template: %w", err)
+		}
+
+		rendered, err := template.Execute(pongo2.Context{
+			"data": legacyTemplateData(vars),
+		})
+		if err != nil {
+			return "", fmt.Errorf("failed to render legacy definition template: %w", err)
+		}
+		return rendered, nil
+	}
+
+	return os.Expand(content, func(key string) string {
+		if v, ok := vars[key]; ok {
+			return v
+		}
+		return os.Getenv(key)
+	}), nil
+}
+
+func isLegacyDefinitionTemplate(content string) bool {
+	return strings.Contains(content, "{{") || strings.Contains(content, "{%")
+}
+
+func legacyTemplateData(vars map[string]string) map[string]interface{} {
+	data := make(map[string]interface{}, len(vars))
+	for key, value := range vars {
+		data[key] = value
+	}
+
+	rawMaintainers, ok := vars["BK_APIGW_MANAGER_MAINTAINERS"]
+	if !ok || rawMaintainers == "" {
+		rawMaintainers = os.Getenv("BK_APIGW_MANAGER_MAINTAINERS")
+	}
+	if rawMaintainers != "" {
+		data["BK_APIGW_MANAGER_MAINTAINERS"] = splitAndTrim(rawMaintainers)
+	}
+
+	return data
+}
+
+func splitAndTrim(raw string) []string {
+	parts := strings.Split(raw, ",")
+	result := make([]string, 0, len(parts))
+	for _, part := range parts {
+		trimmed := strings.TrimSpace(part)
+		if trimmed != "" {
+			result = append(result, trimmed)
+		}
+	}
+	return result
+}
+
+func newDefinitionFromRendered(rendered string, legacy bool) (*manager.Definition, error) {
+	if !legacy {
+		return manager.NewDefinitionFromYaml([]byte(rendered))
+	}
+
+	var definition map[string]interface{}
+	err := yaml.Unmarshal([]byte(rendered), &definition)
+	if err != nil {
+		return nil, fmt.Errorf("failed to unmarshal yaml: %w", err)
+	}
+
+	normalizeLegacyDefinition(definition)
+	return manager.NewDefinition(definition), nil
+}
+
+func normalizeLegacyDefinition(definition map[string]interface{}) {
+	if _, ok := definition["stages"]; ok {
+		return
+	}
+
+	stage, ok := definition["stage"]
+	if !ok {
+		return
+	}
+
+	definition["stages"] = []interface{}{stage}
 }
 
 func runSyncApigw() {

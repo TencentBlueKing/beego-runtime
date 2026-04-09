@@ -13,6 +13,7 @@ require github.com/TencentBlueKing/bk-apigateway-sdks v1.1.3
 require (
 	github.com/TencentBlueKing/bk-plugin-framework-go v0.5.0
 	github.com/beego/bee/v2 v2.0.2
+	github.com/flosch/pongo2/v5 v5.0.0
 	github.com/go-redis/redis/v8 v8.11.4
 	github.com/google/uuid v1.2.0
 	github.com/opentracing/opentracing-go v1.2.0
@@ -39,7 +40,6 @@ require (
 	github.com/davecgh/go-spew v1.1.1 // indirect
 	github.com/dgryski/go-rendezvous v0.0.0-20200823014737-9f7001d12a5f // indirect
 	github.com/flosch/pongo2 v0.0.0-20200529170236-5abacdfa4915 // indirect
-	github.com/flosch/pongo2/v5 v5.0.0 // indirect
 	github.com/fsnotify/fsnotify v1.4.9 // indirect
 	github.com/gabriel-vasile/mimetype v1.4.8 // indirect
 	github.com/gin-contrib/sse v0.1.0 // indirect

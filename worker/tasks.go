@@ -54,7 +54,7 @@ func HandlePollTask(traceID string) error {
 		traceLogger,
 	)
 	if err != nil {
-		log.Error("schedule execute error: %v", err)
+		log.Errorf("schedule execute error: %v", err)
 	}
 	return nil
 }
