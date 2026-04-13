@@ -50,7 +50,7 @@ func parseMixedRequest(c *PluginApiDispatchController) (*PluginApiDispatchParam,
 	c.Ctx.Request.Body = io.NopCloser(bytes.NewBuffer(bodyBytes))
 
 	// 根据内容特征判断真实类型
-	isMultipart := len(c.Ctx.Request.MultipartForm.File) > 0
+	isMultipart := c.Ctx.Request.MultipartForm != nil && len(c.Ctx.Request.MultipartForm.File) > 0
 
 	log.Infof("dispatch requests: %v", c.Ctx.Request)
 
@@ -104,6 +104,14 @@ func (c *PluginApiDispatchController) FindController(path string, method string)
 func (c *PluginApiDispatchController) Post() {
 	var param *PluginApiDispatchParam
 	var errMsg string
+
+	// recover panic to ensure error logs are written and a proper response is returned
+	defer func() {
+		if r := recover(); r != nil {
+			log.Errorf("plugin api dispatch panic recovered: %v", r)
+			handleErrResponse(c, fmt.Errorf("%v", r), "internal server error")
+		}
+	}()
 
 	param, isMultipart, err := parseMixedRequest(c)
 	if err != nil {
